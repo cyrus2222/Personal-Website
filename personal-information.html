@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>軒轅十三－個人資料</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #0d1117;
+            border-radius: 10px;
+        }
+        h1, h2 {
+            color: #F5DEB3;
+            text-align: center;
+        }
+        .profile-section {
+            padding: 1rem;
+            background-color: #161b22;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .profile-section h2 {
+            border-bottom: 2px solid #F5DEB3;
+            padding-bottom: 8px;
+            text-align: left;
+        }
+        .profile-section p {
+            color: #c9d1d9;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.html"><img src="images/logo.png" alt="網站Logo"></a>
+            <h1 class="logo cyberpunk-text">軒轅十三的個人空間</h1>
+        </div>
+        <button class="menu-toggle">☰</button>
+        <!-- 索引標籤 -->
+        <ul class="nav-links">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="personal-information.html" class="active">個人資料</a></li>
+            <li><a href="novels.html">小說專區</a></li>
+            <li><a href="art.html">繪圖專區</a></li>
+            <li><a href="videos.html">影音專區</a></li>
+            <li><a href="https://cyrus2222.github.io/hometown-of-lost/">大學專題</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section class="profile-section">
+            <h2>基本資料</h2>
+            <p><strong>姓名：</strong>陳逸軒</p>
+            <p><strong>暱稱：</strong>軒轅十三</p>
+            <p><strong>興趣：</strong>小說創作、平面設計、文書</p>
+            <p><strong>專業：</strong>平面設計、文書</p>
+            <p><strong>科系：</strong>育達科技大學 多媒體與遊戲設計系</p>
+        </section>
+
+        <section class="profile-section">
+            <h2>聯絡方式</h2>
+            <p>Email：a052705@gmail.com</p>
+        </section>
+
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-blocks">
+            <div class="footer-block" style="background: #3498db; width: 100px; height: 100px; left: 10%; top: 20%;"></div>
+            <div class="footer-block" style="background: #2ecc71; width: 80px; height: 80px; right: 15%; top: 10%;"></div>
+            <div class="footer-block" style="background: #e74c3c; width: 120px; height: 60px; left: 30%; bottom: 20%;"></div>
+            <div class="footer-block" style="background: #f1c40f; width: 70px; height: 70px; right: 25%; bottom: 30%;"></div>
+        </div>
+        <div class="footer-content">
+            <p>聯絡方式: a052705@gmail.com</p>
+            <p>版權所有：&copy; 2025 軒轅十三</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>軒轅十三的個人空間</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        #root {
+            min-height: 100vh;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .fade-in-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <div id="root">
+        <nav class="navbar">
+            <div class="logo-container">
+                <a href="index.html"><img src="images/logo.png" alt="網站Logo"></a>
+                <h1 class="logo cyberpunk-text">軒轅十三的個人空間</h1>
+            </div>
+            <button class="menu-toggle">☰</button>   
+            
+            <!-- 索引標籤 -->
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">首頁</a></li>
+                <li><a href="personal-information.html">個人資料</a></li>
+                <li><a href="novels.html">小說專區</a></li>
+                <li><a href="art.html">繪圖專區</a></li>
+                <li><a href="videos.html">影音專區</a></li>
+                <li><a href="https://cyrus2222.github.io/hometown-of-lost/">大學專題</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero homepage-content">
+            <div class="animated-bg">
+                <canvas id="bgCanvas"></canvas>
+            </div>
+            <div class="hero-content">
+                <h2 id="typing-text"></h2>
+                <p id="typing-subtext"></p>
+            </div>
+            <br>
+            <div class="hero-content">
+                <h2>平面設計接單</h2>
+                <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSd1aXsrA3gSxQc62AS9IpBhUo5z-OzTF63xN40aj3GgJN0gTw/viewform?usp=header" class="web-link" target="_blank">點我前往下單</a></p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-blocks">
+                <div class="footer-block" style="background: #3498db; width: 100px; height: 100px; left: 10%; top: 20%;"></div>
+                <div class="footer-block" style="background: #2ecc71; width: 80px; height: 80px; right: 15%; top: 10%;"></div>
+                <div class="footer-block" style="background: #e74c3c; width: 120px; height: 60px; left: 30%; bottom: 20%;"></div>
+                <div class="footer-block" style="background: #f1c40f; width: 70px; height: 70px; right: 25%; bottom: 30%;"></div>
+            </div>
+            <div class="footer-content">
+                <p>聯絡方式: a052705@gmail.com</p>
+                <p>版權所有：&copy; 2025 軒轅十三</p>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        window.addEventListener("load", function () {
+            document.body.classList.add("fade-in-active");
+        });
+
+        // 幾何背景動畫 - 限制範圍只在 .hero 內
+        const canvas = document.getElementById("bgCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            const heroSection = document.querySelector(".hero");
+            if (heroSection) {
+                canvas.width = window.innerWidth;
+                canvas.height = heroSection.offsetHeight;
+            }
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        const shapes = [];
+        for (let i = 0; i < 50; i++) {
+            let r = Math.floor(Math.random() * 80) + 30;
+            let g = Math.floor(Math.random() * 80) + 30;
+            let b = Math.floor(Math.random() * 80) + 30;
+            shapes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 40 + 10,
+                dx: Math.random() * 1.5 - 0.75,
+                dy: Math.random() * 1.5 - 0.75,
+                color: `rgba(${r}, ${g}, ${b}, 0.5)`
+            });
+        }
+
+       
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(13, 27, 42, 0.95)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            shapes.forEach(shape => {
+                ctx.fillStyle = shape.color;
+                ctx.beginPath();
+                ctx.arc(shape.x, shape.y, shape.size, 0, Math.PI * 2);
+                ctx.fill();
+                shape.x += shape.dx;
+                shape.y += shape.dy;
+                if (shape.x <= 0 || shape.x >= canvas.width) shape.dx *= -1;
+                if (shape.y <= 0 || shape.y >= canvas.height) shape.dy *= -1;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+    // 首頁打字效果
+    document.addEventListener("DOMContentLoaded", function () {
+    const text1 = "哈囉，我是軒轅十三"; // 第一行文字
+    const text2 = "一個充滿想像力，喜歡寫小說、做平面設計的人"; // 第二行文字
+    const typingText = document.getElementById("typing-text");
+    const typingSubtext = document.getElementById("typing-subtext");
+    let index1 = 0;
+    let index2 = 0;
+
+    function typeFirstText() {
+        if (index1 < text1.length) {
+            typingText.innerHTML += text1.charAt(index1);
+            index1++;
+            setTimeout(typeFirstText, 150); // 調整打字速度
+        } else {
+            setTimeout(typeSecondText, 500); // 第一行結束後，延遲 500ms 再開始第二行
+        }
+    }
+
+    function typeSecondText() {
+        if (index2 < text2.length) {
+            typingSubtext.innerHTML += text2.charAt(index2);
+            index2++;
+            setTimeout(typeSecondText, 150); // 調整打字速度
+        }
+    }
+
+    typeFirstText(); // 啟動第一行打字
+});
+
+
+
+    </script>
+</body>
+</html>

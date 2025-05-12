@@ -1,0 +1,712 @@
+/* 全局設定 */
+html, body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0D1B2A;
+    color: white;
+    text-align: center;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.web-link {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* 導航欄樣式 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #030b13;
+    padding: 1rem;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-container img {
+    width: 40px;
+    height: 40px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+/* 導航鏈接樣式 */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.nav-links li {
+    display: inline;
+    position: relative;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding-bottom: 5px;
+    padding-right: 10px;
+}
+
+.nav-links a.active {
+    color: #F5DEB3;
+    border-bottom: 3px solid #F5DEB3;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* 新增這一條，讓 logo 的顏色不受影響 */
+.logo-container h1 {
+    color: white !important;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        padding: 1rem;
+        border-radius: 5px;
+    }
+    .nav-links.active {
+        display: flex;
+    }
+    .menu-toggle {
+        display: block;
+    }
+    .sidebar-toggle {
+        display: block !important;
+        position: fixed; /* 改為固定定位 */
+        top: 75px;
+        left: 15px;
+        background: none !important; /* 確保沒有背景色 */
+        border: none;
+        cursor: pointer;
+        z-index: 1100;
+        display: none !important; /* 確保完整視窗時隱藏 */
+    }
+
+    /* 側目錄設置 */
+    .sidebar {
+        display: none; /* 預設隱藏 */
+        position: fixed;
+        top: 10px; /* 設置在按鈕下方 */
+        left: 10px; /* 與按鈕對齊 */
+        width: 250px; /* 側目錄寬度 */
+        max-height: calc(100vh - 80px); /* 防止影響頁面滾動 */
+        background: rgba(3, 11, 19, 0.8) !important;  /* 80% 不透明度 */
+        padding: 1rem;
+        z-index: 1000;
+        overflow-y: auto; /* 內容過長時可以獨立滾動 */
+        border: 3px solid #F5DEB3; /* 小麥色邊框 */
+        border-radius: 8px;
+    }
+
+    /* 當側目錄展開時顯示 */
+    .sidebar.show {
+        display: block;
+    }
+}
+
+.sidebar-toggle {
+    display: block;
+    background: none !important; /* 確保沒有背景色 */
+}
+
+/* 主要內容區域 */
+.hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem 0;
+    margin-top: 0;
+}
+
+.hero-content {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem 2.5rem;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 600px;
+}
+
+/* 幾何背景動畫容器 */
+.animated-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+#bgCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 內容區域調整 */
+.main-content {
+    text-align: center;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 70px;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    margin-left: 100px; /* 為側邊欄預留空間 */
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0; /* 在手機版時移除側邊欄預留空間 */
+    }
+}
+
+/* 個人資料介面 */
+.profile-section {
+    text-align: left; /* 讓整個區塊內的文字靠左 */
+    position: relative; /* 讓這個區塊能夠相對於原本的位置移動 */
+    top: 80px; /* 控制內容往下移動，避免被導覽列擋住 */
+}
+
+/* 個人資料網頁的底邊 */
+.profile-section:last-child {
+    margin-bottom: 70px; /* 只對最後一個區塊增加底部間距 */
+}
+
+.profile-section {
+    padding: 1.5rem;
+    background-color: #161b22;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.profile-section h2 {
+    border-bottom: 2px solid #F5DEB3;
+    padding-bottom: 10px;
+    text-align: left;
+}
+
+.profile-section p {
+    color: #c9d1d9;
+    line-height: 1.8;
+}
+
+/* 分隔線 */
+.section-divider {
+    width: 80%; /* 設定分隔線的寬度 */
+    height: 2px; /* 設定分隔線的高度 */
+    background-color: #F5DEB3; /* 設定顏色 */
+    border: none; /* 移除預設邊框 */
+    margin: 10px auto; /* 設定間距 */
+}
+
+/* 小說目錄 */
+.novel-list {
+    text-align: center;
+    color: #F5DEB3;
+    list-style-position: inside;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.novel-list ul {
+    padding: 0;
+    list-style: none;
+}
+
+.novel-list li::before {
+    content: "• ";
+    color: #F5DEB3;
+    font-size: 1.2rem;
+}
+
+.novel-list a {
+    color: #F5DEB3;
+    text-decoration: none;
+}
+
+/* 小說內文 */
+.synopsis {
+    max-width: 600px;
+    text-align: left;
+    white-space: pre-line;
+    display: block;
+    line-height: 2 !important;
+    font-size: 1rem !important; /* 固定文字大小 */
+    margin-top: 20px; /* 增加上方間距 */
+    padding: 0 15px; /* 增加左右內距 */
+}
+
+/* 修正小說目錄與章節的排版 */
+.novel-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+.novel-title {
+    display: flex;
+    align-items: center; /* 讓文字和三角形垂直置中 */
+    justify-content: space-between; /* 讓三角形與文字分開對齊 */
+    gap: 5px; /* 文字與三角形之間的距離 */
+    width: fit-content;
+    text-align: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+}
+
+/* 章節列表統一樣式 */
+.chapter-list {
+    display: none;
+    padding-left: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.chapter-list li {
+    padding: 5px 0;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chapter-list a {
+    font-size: 0.9rem;
+    width: 100%;
+    line-height: 30px;
+    padding: 0;
+    display: block;
+}
+
+/* 當標題點擊時，展開章節 */
+.novel-title.active + .chapter-list {
+    display: block;
+}
+
+/* 側邊欄統一樣式 */
+.sidebar {
+    width: 250px;
+    background: #030b13;
+    padding: 1rem;
+    min-height: 100vh;
+    margin-top: 120px;
+    border: 2px solid #F5DEB3; /* 新增小麥色邊框 */
+}
+
+.sidebar a, .chapter-list a {
+    display: block;
+    padding: 0.5em 1em;
+    color: #F5DEB3;
+    text-decoration: none;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.sidebar li {
+    padding: 8px;
+    margin: 0;
+}
+
+.sidebar a:hover {
+    background-color: #63563d;
+}
+
+.sidebar a.active {
+    border-radius: 5px;
+    background-color: #63563d;
+}
+
+/* 側目錄按鈕 */
+.sidebar-toggle {
+    opacity:70%;
+    display: none;
+    position: fixed; /* 改為固定定位 */
+    top: 75px;
+    left: 15px;
+    background: none !important; /* 確保沒有背景色 */
+    border: none;
+    cursor: pointer;
+    z-index: 1100;
+    display: none !important; /* 確保完整視窗時隱藏 */
+}
+
+.sidebar-toggle img {
+    width: 40px;
+    height: 40px;
+}
+
+/* 在窄視窗時顯示側目錄按鈕 */
+@media (max-width: 768px) {
+    /* 固定側目錄按鈕 */
+    .sidebar-toggle {
+        display: block !important; /* 在手機或窄視窗時顯示 */
+        position: fixed;
+        top: 80px; /* 距離視窗頂部 */
+        left: 10px; /* 靠左對齊 */
+        z-index: 1100; /* 確保它浮在最上層 */
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* 側目錄設置 */
+    .sidebar {
+        display: none; /* 預設隱藏 */
+        position: fixed;
+        top: 10px; /* 設置在按鈕下方 */
+        left: 10px; /* 與按鈕對齊 */
+        width: 250px; /* 側目錄寬度 */
+        max-height: calc(100vh - 80px); /* 防止影響頁面滾動 */
+        background: rgba(3, 11, 19, 0.8) !important;  /* 80% 不透明度 */
+        padding: 1rem;
+        z-index: 1000;
+        overflow-y: auto; /* 內容過長時可以獨立滾動 */
+        border: 3px solid #F5DEB3; /* 小麥色邊框 */
+        border-radius: 8px;
+    }
+
+    /* 當側目錄展開時顯示 */
+    .sidebar.show {
+        display: block;
+    }
+}
+
+.sidebar-toggle {
+    display: block;
+    background: none !important; /* 確保沒有背景色 */
+}
+
+/* 側邊選單連結的基礎樣式（如果尚未設定） */
+.sidebar a {
+    display: block;           /* 使連結區域擴展為區塊，方便整行點擊 */
+    padding: 0.5em 1em;       /* 增加內距，使點擊區域更大 */
+    color: #F5DEB3;           /* 預設連結文字顏色（小麥色，可依需求調整） */
+    text-decoration: none;    /* 去除底線，保持整潔 */
+    text-align: center;  /* 確保文字置中 */
+}
+
+/* 1. 側邊選單項目滑鼠懸停效果 */
+.sidebar a:hover {
+    background-color: #63563d; /* 滑鼠移入時背景變為#63563d */
+}
+
+/* 側目錄當前章節的背景色 */
+.sidebar .chapter-list a.active {
+    background-color: #63563d;
+    padding: 5px 10px;
+    border-radius: 5px; /* 可選，使選中的章節更突出 */
+}
+
+/* 側邊選單當前（選取）頁面項目樣式 */
+.sidebar a.active {
+    border-radius: 5px; /* 可選，使選中的章節更突出 */
+    background-color: #63563d; /* 當前頁面的選單項目背景保持為#63563d */
+    /* 如有需要也可在此設定文字顏色，以確保對比清晰 */
+}
+
+/* 強制小說側目錄章節置中樣式 */
+.sidebar .chapter-list {
+    padding-left: 0 !important;  /* 移除左邊的內距 */
+    text-align: center !important; /* 文字置中 */
+    width: 100% !important; /* 確保寬度充滿父元素 */
+}
+
+.sidebar .chapter-list li {
+    display: block !important; /* 改為區塊顯示 */
+    text-align: center !important; /* 確保文字置中 */
+    padding: 5px 0 !important; /* 調整上下間距 */
+    height: auto !important; /* 移除固定高度限制 */
+}
+
+.sidebar .chapter-list a {
+    display: inline-block !important; /* 改為行內區塊 */
+    text-align: center !important;
+    width: 80% !important; /* 控制連結寬度 */
+    padding: 5px 0 !important;
+    margin: 0 auto !important; /* 水平置中 */
+}
+
+/* 側目錄章節樣式 */
+.sidebar .chapter-list li {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 30px !important;
+    padding: 0 !important; /* 改為 0 */
+    margin: 0 !important;
+}
+
+.sidebar .chapter-list a {
+    line-height: 30px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* 強制套用置中樣式 */
+.novel-title a {
+    text-align: center !important;  /* 確保小說標題文字置中 */
+    width: 100%;  /* 確保寬度充滿容器 */
+    display: block;  /* 確保區塊化顯示 */
+}
+
+.chapter-list a {
+    text-align: center !important;  /* 確保章節列表文字置中 */
+    width: 100%;  /* 確保寬度充滿容器 */
+    display: block;  /* 確保區塊化顯示 */
+}
+
+/* 影片容器 */
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+}
+
+.video-container iframe {
+    width: 100%;
+    height: 50vw;
+    max-height: 500px;
+}
+
+/* 小說名言樣式 */
+.quote {
+    text-align: center;
+    font-size: 14px;
+    color: #F5DEB3; /* 米黃色 */
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* 插畫 */
+.art {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* 改為靠左對齊 */
+    align-items: flex-start;     /* 改為靠上對齊 */
+    gap: 20px;
+    padding: 20px;
+    margin: 0 auto; /* 保持容器置中 */
+    box-sizing: border-box;
+}
+
+.art-image {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 0; /* 重設所有 margin */
+}
+
+.art h2 {
+width: 100%;    /* 讓標題占滿整行 */
+    text-align: left; /* 標題靠左 */
+    margin-bottom: -10px;
+}
+
+.art-character {
+    max-width: 20%;
+    height: auto;
+}
+
+.art-large-drawing{
+    max-width: 40%;
+    height: auto;
+}
+
+/* 可放大圖片的樣式 */
+.zoomable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.zoomed {
+    transform: scale(3);
+    position: relative;
+    z-index: 1000;
+    pointer-events: auto; /* 確保放大後的圖片仍然可以點擊 */
+}
+
+/* 當有圖片放大時，其他圖片變暗 */
+.zoomed ~ .zoomable {
+    opacity: 0.3;
+}
+
+/* 分隔線樣式 */
+.art hr {
+    width: 1000px;  /* 改為固定寬度 */
+    border: none;
+    height: 5px;
+    background-color: #F5DEB3;
+    margin: 10px 0;
+}
+
+/* 頁尾樣式 */
+.footer {
+    position: relative;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 0 !important;
+}
+
+.footer-blocks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.footer-block {
+    position: absolute;
+    border-radius: 15px;
+    opacity: 0.1;
+}
+
+.footer-content {
+    position: relative;
+    z-index: 1;
+}
+
+.cyberpunk-text {
+    font-family: 'Arial', sans-serif;
+    text-transform: uppercase;
+    position: relative; /* 確保相對定位 */
+    display: inline-block; /* 讓容器符合內容大小 */
+    color: white; /* 設定基本顏色 */
+}
+
+@keyframes glitch {
+    0% { transform: skew(0deg); }
+    20% { transform: skew(2deg); }
+    40% { transform: skew(-2deg); }
+    60% { transform: skew(1deg); }
+    80% { transform: skew(-1deg); }
+    100% { transform: skew(0deg); }
+}
+
+.cyberpunk-text::before,
+.cyberpunk-text::after {
+    content: '軒轅十三的個人空間';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    z-index: -1; /* 確保在主文字後面 */
+}
+
+.cyberpunk-text::before {
+    color: #ff00ff;
+    animation: glitch-before 2s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translate(-2px);
+}
+
+.cyberpunk-text::after {
+    color: #00ffff;
+    animation: glitch-after 2s infinite;
+    clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+    transform: translate(2px);
+}
+
+@keyframes glitch-before {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+@keyframes glitch-after {
+    0% { transform: translate(0); }
+    20% { transform: translate(2px, 2px); }
+    40% { transform: translate(2px, -2px); }
+    60% { transform: translate(-2px, 2px); }
+    80% { transform: translate(-2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+/* 強制小說側目錄章節置中樣式 */
+.sidebar .chapter-list {
+    padding-left: 0 !important;  /* 移除左邊的內距 */
+    text-align: center !important; /* 文字置中 */
+    width: 100% !important; /* 確保寬度充滿父元素 */
+}
+
+.sidebar .chapter-list li {
+    display: block !important; /* 改為區塊顯示 */
+    text-align: center !important; /* 確保文字置中 */
+    padding: 5px 0 !important; /* 調整上下間距 */
+    height: auto !important; /* 移除固定高度限制 */
+}
+
+.sidebar .chapter-list a {
+    display: inline-block !important; /* 改為行內區塊 */
+    text-align: center !important;
+    width: 80% !important; /* 控制連結寬度 */
+    padding: 5px 0 !important;
+    margin: 0 auto !important; /* 水平置中 */
+}
+

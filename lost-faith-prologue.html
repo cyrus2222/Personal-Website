@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>軒轅十三－小說失落的信仰 序章</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <style>
+        .container {
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            min-height: 100vh;
+        }
+        .sidebar h2 {
+            color: #F5DEB3;
+            text-align: center;
+            border-bottom: 2px solid #F5DEB3;
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sidebar a {
+            color: #F5DEB3;
+            text-decoration: none;
+            flex-grow: 1;
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* 讓內容靠上對齊 */
+        }
+        .main-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .synopsis {
+            max-width: 600px;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .chapter-list {
+            display: none;
+            padding-left: 20px;
+        }
+        .chapter-list li {
+            padding: 5px 0;
+            height: 30px; /* 固定高度 */
+            display: flex;
+            align-items: center;
+        }
+        .chapter-list a {
+            font-size: 0.9rem;
+            text-align: center;
+            display: block;
+            width: 100%;
+            line-height: 1.2;
+        }
+        .novel-title {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            height: 30px; /* 固定高度 */
+        }
+        .toggle-button {
+            cursor: pointer;
+            color: #F5DEB3;
+            font-size: 1rem;
+            border: none;
+            background: none;
+            padding: 0 5px;
+            height: 30px; /* 固定高度 */
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.html"><img src="images/logo.png" alt="網站Logo"></a>
+            <h1 class="logo cyberpunk-text">軒轅十三的個人空間</h1>
+        </div>
+        <button class="menu-toggle">☰</button>
+        <!-- 索引標籤 -->
+        <ul class="nav-links">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="personal-information.html">個人資料</a></li>
+            <li><a href="novels.html" class="active">小說專區</a></li>
+            <li><a href="art.html">繪圖專區</a></li>
+            <li><a href="videos.html">影音專區</a></li>
+            <li><a href="https://cyrus2222.github.io/hometown-of-lost/">大學專題</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <!-- 側目錄按鈕 -->
+<button id="sidebar-toggle" class="sidebar-toggle">
+    <img id="sidebar-toggle-icon" src="images/側目錄按鈕.png" alt="側目錄按鈕">
+</button>
+
+<!-- 側目錄 -->
+        <aside class="sidebar" id="sidebar">
+            <h2>小說目錄</h2>
+            <ul >
+                <li class="novel-item">
+                    <div class="novel-title">
+                        <a href="lost-faith.html" class="active">失落的信仰</a>
+                        <span class="toggle-button">▼</span>
+                    </div>
+                    <ul class="chapter-list" style="display: block;">
+                        <li><a href="lost-faith-prologue.html" class="active">序章、賽勒斯．瓦利安特</a></li>
+                        <li><a href="lost-faith-chapter1.html">第一章</a></li>
+                        <li><a href="lost-faith-chapter2.html">第二章</a></li>
+                    </ul>
+                </li>                           
+            </ul>
+        </aside>
+        <section class="main-content">
+            <h1 class="main-title">序章、賽勒斯．瓦利安特</h1>
+            <!-- 名言 -->
+            <p class="quote">「英雄就是對任何事都全力以赴，自始至終，心無旁騖的人。」 —— 波特萊爾</p>
+            <!-- 分隔線 -->
+            <hr class="section-divider">
+            <!-- 顯示字數和最後編輯時間 -->
+            <p id="word-count" style="text-align: right; font-size: 0.9rem; color: #F5DEB3; margin-bottom: -30px;"></p>
+            <!-- 內文 -->
+            <div class="synopsis">
+                天氣陰天，陣陣涼風吹進屋子內，烏鴉群在屋頂上盤旋，似乎在預示著不好的事情。
+                這是一棟別墅莊園，只不過是在一處荒涼的郊外，屋子的主人想遠離人群，靜靜地過完餘生。
+                周圍滿是枯草、坑坑巴巴的沙土，以及石頭砌出邊界的道路。
+                遠出有一輛馬車向此地緩緩而來，駕駛是一名略帶成熟的年輕女子卡蜜莉雅。衣服些許破亂和髒汙，頭上的白頭巾帶點灰色斑塊，不過她似乎並不在乎。
+                後方的貨艙載著滿滿的生活物資，比如食材、編織品、紙等。
+                卡蜜莉雅想著今晚的食譜，希望某人可以滿意，嘴角不自覺地揚起。
+                
+                馬車停泊在莊園大門前，連結大門的是一座方形土牆，十分厚實。
+                卡蜜莉雅下車，走向大門並推開。
+                大門後是一條長長的石板路，兩側種植著各種植物，有的是花草，有的是果樹。
+                路的盡頭是一座兩層樓的別墅，外觀看起來十分古老，但是保養得宜，沒有任何破損。
+                卡蜜莉雅拖著韁繩，馬車跟著她走到別墅門口。
+                她敲了敲門，等了一會兒，沒有人應答。她又敲了敲，還順帶喊了一聲「賽勒斯」。
+                短暫一片寂靜過後，終是沒有回應。卡蜜莉雅皺了皺眉，一大早去市區採購，令她有些疲憊，於是一把推開門。
+                別墅內一片寂靜，只有微風吹過的聲音，以及盤旋在屋頂的烏鴉叫聲。
+                卡蜜莉雅走進客廳，不見任何人影，不過房間門是開的，猜想賽勒斯可能在房間裡睡覺。
+                她走到房門的牆壁轉角，輕聲喊「賽勒斯」，下一刻印入眼簾的是癱坐在椅子上的賽勒斯。
+                心有不安的卡蜜莉雅快步走過去，發現賽勒斯的臉色蒼白，眼神呆滯，甚至聽不見呼吸聲。
+                她慌忙搖晃賽勒斯，卻沒有任何反應，只是一副死人模樣。
+                卡蜜莉雅嚇壞了，她不知道發生了什麼事，只能拿起賽勒斯的手，感受他的脈搏。
+                摸了片刻，絲毫感受不到跳動的脈搏，她的心沉入谷底，不知所措。
+                她坐在賽勒斯的床上，望著他許久，眼淚止不住地流下，不知道該怎麼辦。
+                這時，她看到賽勒斯的手上有一張紙條，她拿起來看了看，上面寫著：
+                「卡蜜莉雅，妳還記得我曾說過的嗎？
+                對不起，我觸碰了不該觸碰的，這是我自找的，在我感受到生命要走到盡頭時，我趕快寫了這張紙條，至少對妳有個告別。
+                妳可以永遠不要忘記我嗎？」
+                最後一個字帶有一條很長的筆劃，末端越來越淡，似乎是賽勒斯在寫信時快要失去意識。
+                卡蜜莉雅抱著紙條，眼淚不停地流，她回想起了與賽勒斯相處的點點滴滴、一言一行、一舉一動。
+                她曾想過賽勒斯可能會突然離開，但是沒想到會這麼突然。
+                她把紙條放回賽勒斯的手上，輕輕地摸了摸他的臉，然後站起來，走出房間。
+                她走到客廳，坐在沙發上，抱著雙膝，望著周圍兩人的生活痕跡。
+                她想起了賽勒斯的笑容，想起了他的溫柔，想起了他的堅強。
+
+            </div>
+        </section>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-blocks">
+            <div class="footer-block" style="background: #3498db; width: 100px; height: 100px; left: 10%; top: 20%;"></div>
+            <div class="footer-block" style="background: #2ecc71; width: 80px; height: 80px; right: 15%; top: 10%;"></div>
+            <div class="footer-block" style="background: #e74c3c; width: 120px; height: 60px; left: 30%; bottom: 20%;"></div>
+            <div class="footer-block" style="background: #f1c40f; width: 70px; height: 70px; right: 25%; bottom: 30%;"></div>
+        </div>
+        <div class="footer-content">
+            <p>聯絡方式: a052705@gmail.com</p>
+            <p>版權所有：&copy; 2025 軒轅十三</p>
+        </div>
+    </footer>
+    
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        document.querySelectorAll(".toggle-button").forEach(button => {
+            button.addEventListener("click", () => {
+                const chapterList = button.closest(".novel-item").querySelector(".chapter-list");
+                if (chapterList.style.display === "block") {
+                    chapterList.style.display = "none";
+                    button.textContent = "▶";
+                } else {
+                    chapterList.style.display = "block";
+                    button.textContent = "▼";
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("show");
+        });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const synopsisElement = document.querySelector(".synopsis");
+            const wordCountElement = document.getElementById("word-count");
+
+            function updateWordCount() {
+                const textContent = synopsisElement.innerText.trim().replace(/\s+/g, '');
+                const wordCount = textContent.length.toLocaleString('zh-TW');
+                wordCountElement.innerText = `本篇共 ${wordCount} 字，最後編輯時間於2025/03/16 18:51`;
+            }
+
+            if (synopsisElement && wordCountElement) {
+                updateWordCount();
+                const observer = new MutationObserver(updateWordCount);
+                observer.observe(synopsisElement, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
