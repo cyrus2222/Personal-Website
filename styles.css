@@ -244,7 +244,7 @@ html, body {
     margin: 10px auto; /* 設定間距 */
 }
 
-/* 小說目錄 */
+/* 寫作目錄 */
 .novel-list {
     text-align: center;
     color: #F5DEB3;
@@ -270,7 +270,7 @@ html, body {
     text-decoration: none;
 }
 
-/* 小說內文 */
+/* 寫作內文 */
 .synopsis {
     max-width: 600px;
     text-align: left;
@@ -282,7 +282,11 @@ html, body {
     padding: 0 15px; /* 增加左右內距 */
 }
 
-/* 修正小說目錄與章節的排版 */
+.synopsis h2 {
+    margin-bottom: -22px; /* 或你想要的數值，預設通常是16px或24px */
+}
+
+/* 修正寫作目錄與章節的排版 */
 .novel-item {
     display: flex;
     flex-direction: column;
@@ -430,11 +434,13 @@ html, body {
 
 /* 側邊選單連結的基礎樣式（如果尚未設定） */
 .sidebar a {
-    display: block;           /* 使連結區域擴展為區塊，方便整行點擊 */
-    padding: 0.5em 1em;       /* 增加內距，使點擊區域更大 */
-    color: #F5DEB3;           /* 預設連結文字顏色（小麥色，可依需求調整） */
-    text-decoration: none;    /* 去除底線，保持整潔 */
-    text-align: center;  /* 確保文字置中 */
+    display: block;
+    padding: 0.5em 1em;
+    color: #F5DEB3;
+    text-decoration: none;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 /* 1. 側邊選單項目滑鼠懸停效果 */
@@ -456,7 +462,7 @@ html, body {
     /* 如有需要也可在此設定文字顏色，以確保對比清晰 */
 }
 
-/* 強制小說側目錄章節置中樣式 */
+/* 強制寫作側目錄章節置中樣式 */
 .sidebar .chapter-list {
     padding-left: 0 !important;  /* 移除左邊的內距 */
     text-align: center !important; /* 文字置中 */
@@ -496,7 +502,7 @@ html, body {
 
 /* 強制套用置中樣式 */
 .novel-title a {
-    text-align: center !important;  /* 確保小說標題文字置中 */
+    text-align: center !important;  /* 確保寫作標題文字置中 */
     width: 100%;  /* 確保寬度充滿容器 */
     display: block;  /* 確保區塊化顯示 */
 }
@@ -521,7 +527,7 @@ html, body {
     max-height: 500px;
 }
 
-/* 小說名言樣式 */
+/* 寫作名言樣式 */
 .quote {
     text-align: center;
     font-size: 14px;
@@ -686,27 +692,5 @@ width: 100%;    /* 讓標題占滿整行 */
     60% { transform: translate(-2px, 2px); }
     80% { transform: translate(-2px, -2px); }
     100% { transform: translate(0); }
-}
-
-/* 強制小說側目錄章節置中樣式 */
-.sidebar .chapter-list {
-    padding-left: 0 !important;  /* 移除左邊的內距 */
-    text-align: center !important; /* 文字置中 */
-    width: 100% !important; /* 確保寬度充滿父元素 */
-}
-
-.sidebar .chapter-list li {
-    display: block !important; /* 改為區塊顯示 */
-    text-align: center !important; /* 確保文字置中 */
-    padding: 5px 0 !important; /* 調整上下間距 */
-    height: auto !important; /* 移除固定高度限制 */
-}
-
-.sidebar .chapter-list a {
-    display: inline-block !important; /* 改為行內區塊 */
-    text-align: center !important;
-    width: 80% !important; /* 控制連結寬度 */
-    padding: 5px 0 !important;
-    margin: 0 auto !important; /* 水平置中 */
 }
 
