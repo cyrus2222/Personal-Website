@@ -85,11 +85,59 @@
             box-shadow: 0 0 10px rgba(245, 222, 179, 0.4);
         }
 
+        .toolkit-search {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .toolkit-search input {
+            width: 100%;
+            padding: 12px 20px 12px 44px;
+            background: rgba(3, 11, 19, 0.8);
+            border: 1px solid rgba(245, 222, 179, 0.2);
+            border-radius: 999px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+        }
+
+        .toolkit-search input:focus {
+            border-color: rgba(245, 222, 179, 0.5);
+            box-shadow: 0 0 20px rgba(245, 222, 179, 0.08);
+        }
+
+        .toolkit-search input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .toolkit-search::before {
+            content: '🔍';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .no-result-msg {
+            display: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            margin-top: 1rem;
+        }
+
         .toolkit-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1100px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            max-width: 1000px;
             width: 100%;
             padding: 0 1rem;
         }
@@ -98,14 +146,17 @@
             position: relative;
             background: linear-gradient(135deg, rgba(3, 11, 19, 0.9), rgba(22, 27, 34, 0.95));
             border: 1px solid rgba(245, 222, 179, 0.15);
-            border-radius: 12px;
-            padding: 2.5rem 2rem;
+            border-radius: 10px;
+            padding: 1.4rem 1rem;
             text-align: center;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
             text-decoration: none;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .tool-card::before {
@@ -114,76 +165,52 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(to right, transparent, #F5DEB3, transparent);
             transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .tool-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(245, 222, 179, 0.06), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s;
+            transition: transform 0.35s;
         }
 
         .tool-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-6px);
             border-color: rgba(245, 222, 179, 0.4);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(245, 222, 179, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 20px rgba(245, 222, 179, 0.06);
         }
 
         .tool-card:hover::before {
             transform: scaleX(1);
         }
 
-        .tool-card:hover::after {
-            opacity: 1;
-        }
-
         .tool-card:hover .tool-icon {
             transform: scale(1.1);
-            text-shadow: 0 0 30px rgba(245, 222, 179, 0.5);
         }
 
         .tool-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.2rem;
+            font-size: 2rem;
             display: block;
-            transition: all 0.4s;
+            transition: transform 0.35s;
             position: relative;
             z-index: 1;
         }
 
         .tool-card-title {
-            font-size: 1.4rem;
+            font-size: 0.95rem;
             color: #F5DEB3;
-            margin-bottom: 0.8rem;
-            letter-spacing: 0.1em;
-            font-weight: bold;
+            letter-spacing: 0.08em;
+            font-weight: 600;
             position: relative;
             z-index: 1;
-        }
-
-        .tool-card-desc {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 1;
+            line-height: 1.4;
         }
 
         .tool-card-tag {
             display: inline-block;
-            padding: 0.3rem 1rem;
-            border: 1px solid rgba(245, 222, 179, 0.3);
+            padding: 0.2rem 0.7rem;
+            border: 1px solid rgba(245, 222, 179, 0.25);
             border-radius: 999px;
-            font-size: 0.75rem;
-            color: #F5DEB3;
-            letter-spacing: 0.15em;
+            font-size: 0.7rem;
+            color: rgba(245, 222, 179, 0.7);
+            letter-spacing: 0.12em;
             position: relative;
             z-index: 1;
             transition: all 0.3s;
@@ -192,6 +219,7 @@
         .tool-card:hover .tool-card-tag {
             background: rgba(245, 222, 179, 0.1);
             border-color: #F5DEB3;
+            color: #F5DEB3;
         }
 
         .back-link {
@@ -221,12 +249,14 @@
             }
 
             .toolkit-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
             }
+        }
 
-            .tool-card {
-                padding: 2rem 1.5rem;
+        @media (max-width: 480px) {
+            .toolkit-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -263,44 +293,42 @@
             <p>自製的實用小工具，歡迎自由使用</p>
         </div>
 
-        <div class="toolkit-grid">
-            <a href="tools/discord-text-format/index.html" class="tool-card">
+        <div class="toolkit-search">
+            <input type="text" id="toolSearch" placeholder="搜尋工具名稱或標籤…" oninput="filterTools()">
+        </div>
+
+        <div class="toolkit-grid" id="toolGrid">
+            <a href="tools/discord-text-format/index.html" class="tool-card" data-keywords="discord 文字格式 編輯器 粗體 斜體 文字編輯">
                 <span class="tool-icon">💬</span>
                 <div class="tool-card-title">Discord 文字格式編輯器</div>
-                <div class="tool-card-desc">
-                    快速為 Discord 訊息加上粗體、斜體、刪除線、代碼塊、引用等格式。
-                    支援一鍵複製，讓你的訊息更加豐富。
-                </div>
                 <span class="tool-card-tag">文字編輯</span>
             </a>
 
-            <a href="tools/qr-code/index.html" class="tool-card">
+            <a href="tools/qr-code/index.html" class="tool-card" data-keywords="qr 碼 qrcode 產生 掃描 解析">
                 <span class="tool-icon">📱</span>
-                <div class="tool-card-title">QR 碼產生與解析工具</div>
-                <div class="tool-card-desc">
-                    輸入網址或文字即可產生 QR 碼，也能上傳圖片或從剪貼簿貼上來解析 QR 碼內容。
-                </div>
+                <div class="tool-card-title">QR 碼產生與解析</div>
                 <span class="tool-card-tag">QR 碼</span>
             </a>
 
-            <a href="tools/text-converter/index.html" class="tool-card">
+            <a href="tools/text-converter/index.html" class="tool-card" data-keywords="簡繁 轉換 全形 半形 中文 文字轉換">
                 <span class="tool-icon">🔄</span>
                 <div class="tool-card-title">簡繁．全形半形轉換器</div>
-                <div class="tool-card-desc">
-                    即時將簡體中文轉繁體、繁體轉簡體，同時支援全形與半形字元的互相轉換。
-                </div>
                 <span class="tool-card-tag">文字轉換</span>
             </a>
 
-            <a href="tools/food-guide/index.html" class="tool-card">
+            <a href="tools/food-guide/index.html" class="tool-card" data-keywords="燕雲十六聲 美食 位置 圖鑑 料理 攻略 遊戲攻略">
                 <span class="tool-icon">🍜</span>
-                <div class="tool-card-title">燕雲十六聲 - 美食位置圖鑑</div>
-                <div class="tool-card-desc">
-                    收錄燕雲十六聲全地圖生活暴擊率料理攤販位置，含清河與開封地區，支援搜尋與分類篩選。
-                </div>
+                <div class="tool-card-title">燕雲十六聲 美食圖鑑</div>
                 <span class="tool-card-tag">遊戲攻略</span>
             </a>
+
+            <a href="tools/translator/index.html" class="tool-card" data-keywords="翻譯 translate google 谷歌 語言 英文 日文 韓文 中文 繁體 簡體">
+                <span class="tool-icon">🌐</span>
+                <div class="tool-card-title">翻譯工具</div>
+                <span class="tool-card-tag">語言翻譯</span>
+            </a>
         </div>
+        <p class="no-result-msg" id="noResultMsg">找不到符合的工具</p>
 
         <a href="index.html" class="back-link">← 返回首頁</a>
     </section>
@@ -370,6 +398,21 @@
             requestAnimationFrame(animate);
         }
         animate();
+
+        function filterTools() {
+            const query = document.getElementById('toolSearch').value.trim().toLowerCase();
+            const cards = document.querySelectorAll('.tool-card');
+            let visible = 0;
+            cards.forEach(card => {
+                const title = card.querySelector('.tool-card-title').textContent.toLowerCase();
+                const tag = card.querySelector('.tool-card-tag').textContent.toLowerCase();
+                const keywords = (card.dataset.keywords || '').toLowerCase();
+                const match = !query || title.includes(query) || tag.includes(query) || keywords.includes(query);
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            document.getElementById('noResultMsg').style.display = visible === 0 ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>
