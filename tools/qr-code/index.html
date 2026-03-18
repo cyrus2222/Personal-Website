@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR碼產生與解析工具 — 十三工具包</title>
+    <style>
+        :root {
+            --bg: #0D1B2A; --card: #0a1628; --card2: #060e1a;
+            --text: #fff; --muted: rgba(255,255,255,0.55);
+            --accent: #F5DEB3; --accent-dim: rgba(245,222,179,0.3);
+            --accent-bg: rgba(245,222,179,0.06); --border: rgba(245,222,179,0.15);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, "Noto Sans TC", system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .wrap { max-width: 960px; margin: 0 auto; padding: 16px; }
+
+        .top-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(13,27,42,0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); padding: 10px 16px;
+            display: flex; gap: 10px; flex-wrap: wrap; margin: -16px -16px 12px; width: calc(100% + 32px);
+        }
+        .top-nav a { color: var(--accent); text-decoration: none; font-size: .85rem; letter-spacing: .1em; padding: .4rem 1rem; border: 1px solid var(--border); border-radius: 999px; transition: all .3s; display: inline-block; }
+        .top-nav a:hover { background: var(--accent-bg); border-color: var(--accent); }
+
+        .back-to-top {
+            position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px;
+            border-radius: 50%; background: rgba(13,27,42,0.9); border: 1px solid var(--border);
+            color: var(--accent); font-size: 1.2rem; cursor: pointer; z-index: 999;
+            opacity: 0; visibility: hidden; transition: all .3s;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        .back-to-top:hover { background: rgba(245,222,179,0.15); border-color: var(--accent); transform: translateY(-2px); }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+
+        h1 { text-align: center; color: var(--accent); font-size: 1.7rem; margin: 16px 0 8px; letter-spacing: .08em; text-shadow: 0 0 18px rgba(245,222,179,.2); }
+
+        .tab-nav { display: flex; gap: 4px; margin-bottom: 20px; justify-content: center; }
+        .tab-btn { padding: 10px 28px; background: var(--card); border: 1px solid var(--border); color: var(--muted); border-radius: 8px 8px 0 0; cursor: pointer; font-size: .95rem; transition: all .2s; }
+        .tab-btn.active { background: var(--accent); color: #0D1B2A; border-color: var(--accent); font-weight: 600; }
+        .tab-content { display: none; } .tab-content.active { display: block; }
+
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+        .panel-title { color: var(--accent); font-size: 1rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); letter-spacing: .08em; font-weight: 600; }
+
+        .type-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .type-btn { padding: 7px 14px; background: var(--card2); border: 1px solid var(--border); color: var(--muted); border-radius: 999px; cursor: pointer; font-size: .82rem; transition: all .2s; }
+        .type-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .type-btn.active { background: var(--accent); color: #0D1B2A; border-color: var(--accent); font-weight: 600; }
+
+        .input-form { display: none; } .input-form.active { display: block; }
+        label.field-label { display: block; color: var(--muted); font-size: .82rem; margin-bottom: 4px; margin-top: 10px; }
+        label.field-label:first-child { margin-top: 0; }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="url"],
+        input[type="date"], input[type="time"], textarea, select {
+            width: 100%; padding: 9px 12px; background: var(--card2); color: var(--text); border: 1px solid var(--border);
+            border-radius: 6px; font-size: .9rem; outline: none; transition: border-color .2s; font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent-dim); }
+        textarea { min-height: 80px; resize: vertical; }
+        select option { background: var(--card2); color: var(--text); }
+        .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .gen-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+        @media (max-width: 700px) { .gen-layout { grid-template-columns: 1fr; } }
+
+        .preview-box { display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        #qr-preview { background: #fff; border-radius: 8px; padding: 8px; display: inline-block; min-width: 200px; min-height: 200px; }
+        #qr-preview canvas, #qr-preview svg { display: block; max-width: 100%; height: auto; }
+        .qr-placeholder { width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; color: #999; font-size: .85rem; }
+
+        .dl-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+        .dl-btn { padding: 8px 16px; background: var(--accent-bg); border: 1px solid var(--border); color: var(--accent); border-radius: 6px; cursor: pointer; font-size: .82rem; transition: all .2s; }
+        .dl-btn:hover { background: rgba(245,222,179,.15); border-color: var(--accent); transform: translateY(-1px); }
+        .filename-row { margin-top: 10px; display: flex; gap: 8px; align-items: center; justify-content: center; }
+        .filename-row label { color: var(--muted); font-size: .8rem; white-space: nowrap; }
+        .filename-row input { max-width: 180px; padding: 6px 10px; font-size: .82rem; text-align: center; }
+
+        .s-group { margin-bottom: 14px; } .s-group:last-child { margin-bottom: 0; }
+        .s-label { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: .82rem; margin-bottom: 4px; }
+        .s-label .s-val { color: var(--accent); font-weight: 500; }
+        .s-row { display: flex; gap: 10px; align-items: center; }
+
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--card2); border-radius: 3px; outline: none; border: 1px solid var(--border); }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; cursor: pointer; border: 2px solid var(--bg); }
+
+        input[type="color"] { -webkit-appearance: none; border: 1px solid var(--border); border-radius: 6px; width: 40px; height: 32px; cursor: pointer; padding: 2px; background: var(--card2); }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+
+        .s-select { padding: 7px 10px; font-size: .82rem; }
+        .cb-label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .82rem; cursor: pointer; margin-top: 6px; }
+        .cb-label input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+
+        .logo-upload-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .logo-upload-area input[type="file"] { font-size: .8rem; color: var(--muted); max-width: 200px; }
+        .logo-upload-area input[type="file"]::file-selector-button { padding: 5px 12px; background: var(--accent-bg); color: var(--accent); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; margin-right: 8px; font-size: .78rem; }
+        .sm-btn { padding: 6px 14px; background: var(--card2); border: 1px solid var(--border); color: var(--muted); border-radius: 6px; cursor: pointer; font-size: .78rem; transition: all .2s; }
+        .sm-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .sm-btn.danger { border-color: rgba(200,50,50,.3); color: #e57373; }
+        .sm-btn.danger:hover { background: rgba(200,50,50,.1); }
+
+        .scan-box { text-align: center; }
+        #camera-video { width: 100%; max-width: 480px; border-radius: 8px; background: #000; display: none; margin: 10px auto; }
+        .scan-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 12px 0; }
+        .scan-btn { padding: 10px 20px; background: var(--accent-bg); border: 1px solid var(--border); color: var(--accent); border-radius: 8px; cursor: pointer; font-size: .88rem; transition: all .2s; }
+        .scan-btn:hover { background: rgba(245,222,179,.15); border-color: var(--accent); }
+        .scan-file { margin: 10px auto; }
+        .scan-file input[type="file"] { font-size: .85rem; color: var(--muted); }
+        .scan-file input[type="file"]::file-selector-button { padding: 6px 14px; background: var(--accent-bg); color: var(--accent); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; margin-right: 8px; }
+
+        .result-box { margin-top: 16px; display: none; } .result-box.show { display: block; }
+        .result-row { display: flex; gap: 8px; align-items: center; }
+        .result-row input { flex: 1; padding: 10px; font-size: .9rem; }
+        .result-actions { display: flex; gap: 8px; margin-top: 8px; justify-content: center; }
+
+        #toast { position: fixed; top: 18px; right: 18px; padding: 12px 20px; border-radius: 6px; color: #fff; font-size: .85rem; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+        #toast.show { opacity: 1; } #toast.success { background: #2e7d32; } #toast.warning { background: #c62828; }
+
+        .footer { text-align: center; color: var(--muted); font-size: .78rem; padding: 20px 0; margin-top: 10px; border-top: 1px solid var(--border); }
+        .footer a { color: var(--accent); text-decoration: none; } .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top-nav">
+        <a href="../../toolkit.html">← 返回十三工具包</a>
+        <a href="../../index.html">← 返回主站</a>
+    </div>
+
+    <h1>QR碼產生與解析工具</h1>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="generate">產生 QR 碼</button>
+        <button class="tab-btn" data-tab="scan">掃描 / 解析</button>
+    </div>
+
+    <div class="tab-content active" id="tab-generate">
+        <div class="panel">
+            <div class="panel-title">QR碼內容</div>
+            <div class="type-selector">
+                <button class="type-btn active" data-type="url">網址</button>
+                <button class="type-btn" data-type="text">純文字</button>
+                <button class="type-btn" data-type="wifi">Wi-Fi</button>
+                <button class="type-btn" data-type="vcard">名片</button>
+                <button class="type-btn" data-type="calendar">行事曆</button>
+                <button class="type-btn" data-type="sms">簡訊</button>
+                <button class="type-btn" data-type="phone">電話</button>
+                <button class="type-btn" data-type="email">電子郵件</button>
+            </div>
+            <div class="input-form active" id="form-url"><label class="field-label">網址</label><input type="url" id="f-url" placeholder="https://example.com" oninput="updateQR()"></div>
+            <div class="input-form" id="form-text"><label class="field-label">文字內容</label><textarea id="f-text" placeholder="輸入任意文字…" oninput="updateQR()"></textarea></div>
+            <div class="input-form" id="form-wifi">
+                <label class="field-label">Wi-Fi 名稱 (SSID)</label><input type="text" id="f-wifi-ssid" placeholder="MyWiFi" oninput="updateQR()">
+                <label class="field-label">密碼</label><input type="text" id="f-wifi-pass" placeholder="密碼" oninput="updateQR()">
+                <label class="field-label">加密方式</label><select id="f-wifi-enc" onchange="updateQR()"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">不加密</option></select>
+            </div>
+            <div class="input-form" id="form-vcard">
+                <div class="row2"><div><label class="field-label">姓氏</label><input type="text" id="f-vc-ln" oninput="updateQR()"></div><div><label class="field-label">名字</label><input type="text" id="f-vc-fn" oninput="updateQR()"></div></div>
+                <label class="field-label">公司</label><input type="text" id="f-vc-org" oninput="updateQR()">
+                <div class="row2"><div><label class="field-label">E-Mail</label><input type="email" id="f-vc-email" oninput="updateQR()"></div><div><label class="field-label">行動電話</label><input type="tel" id="f-vc-tel" oninput="updateQR()"></div></div>
+                <label class="field-label">地址</label><input type="text" id="f-vc-addr" oninput="updateQR()">
+                <label class="field-label">網站</label><input type="url" id="f-vc-url" oninput="updateQR()">
+            </div>
+            <div class="input-form" id="form-calendar">
+                <label class="field-label">事件名稱</label><input type="text" id="f-cal-title" oninput="updateQR()">
+                <div class="row2"><div><label class="field-label">開始日期</label><input type="date" id="f-cal-sd" onchange="updateQR()"></div><div><label class="field-label">開始時間</label><input type="time" id="f-cal-st" onchange="updateQR()"></div></div>
+                <div class="row2"><div><label class="field-label">結束日期</label><input type="date" id="f-cal-ed" onchange="updateQR()"></div><div><label class="field-label">結束時間</label><input type="time" id="f-cal-et" onchange="updateQR()"></div></div>
+                <label class="field-label">地點</label><input type="text" id="f-cal-loc" oninput="updateQR()">
+                <label class="field-label">說明</label><textarea id="f-cal-desc" oninput="updateQR()"></textarea>
+            </div>
+            <div class="input-form" id="form-sms"><label class="field-label">電話號碼</label><input type="tel" id="f-sms-tel" oninput="updateQR()"><label class="field-label">簡訊內容</label><textarea id="f-sms-msg" oninput="updateQR()"></textarea></div>
+            <div class="input-form" id="form-phone"><label class="field-label">電話號碼</label><input type="tel" id="f-phone" placeholder="+886912345678" oninput="updateQR()"></div>
+            <div class="input-form" id="form-email"><label class="field-label">電子郵件</label><input type="email" id="f-email-addr" placeholder="user@example.com" oninput="updateQR()"><label class="field-label">主旨</label><input type="text" id="f-email-subj" oninput="updateQR()"><label class="field-label">內容</label><textarea id="f-email-body" oninput="updateQR()"></textarea></div>
+        </div>
+
+        <div class="gen-layout">
+            <div class="panel">
+                <div class="panel-title">QR碼預覽</div>
+                <div class="preview-box">
+                    <div id="qr-preview"><div class="qr-placeholder">請輸入內容</div></div>
+                    <div class="dl-row">
+                        <button class="dl-btn" onclick="downloadQR('png')">PNG</button>
+                        <button class="dl-btn" onclick="downloadQR('jpeg')">JPEG</button>
+                        <button class="dl-btn" onclick="downloadQR('svg')">SVG</button>
+                        <button class="dl-btn" onclick="downloadQR('webp')">WEBP</button>
+                    </div>
+                    <div class="filename-row"><label>檔名：</label><input type="text" id="dl-filename" value="qrcode"></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">QR碼設定</div>
+                <div class="s-group"><div class="s-label">尺寸 <span class="s-val" id="v-size">300</span>px</div><input type="range" id="s-size" min="100" max="1000" value="300" step="10" oninput="onSizeChange()"></div>
+                <div class="s-group"><div class="s-label">邊框寬度 <span class="s-val" id="v-margin">10</span></div><input type="range" id="s-margin" min="0" max="50" value="10" oninput="onMarginChange()"></div>
+                <div class="s-group"><div class="s-row"><div style="flex:1"><div class="s-label">QR碼顏色</div><input type="color" id="s-fg" value="#000000" onchange="updateQR()"></div><div style="flex:1"><div class="s-label">背景顏色</div><input type="color" id="s-bg" value="#ffffff" onchange="updateQR()"></div></div><label class="cb-label"><input type="checkbox" id="s-transparent" onchange="updateQR()"> 背景透明</label></div>
+                <div class="s-group"><div class="s-label">容錯率</div><select class="s-select" id="s-ec" onchange="updateQR()" style="width:100%"><option value="L">L - 低 (7%)</option><option value="M" selected>M - 中 (15%)</option><option value="Q">Q - 四分之一 (25%)</option><option value="H">H - 高 (30%)</option></select></div>
+                <div class="s-group"><div class="s-label">點樣式</div><select class="s-select" id="s-dot" onchange="updateQR()" style="width:100%"><option value="square">方形（預設）</option><option value="rounded">圓角方形</option><option value="dots">圓點</option><option value="classy">經典</option><option value="classy-rounded">經典圓角</option><option value="extra-rounded">超圓角</option></select></div>
+                <div class="s-group"><div class="s-label">角落外框樣式</div><div class="s-row"><select class="s-select" id="s-csq" onchange="updateQR()" style="flex:1"><option value="">和內部一致</option><option value="square">正方形</option><option value="extra-rounded">圓角</option><option value="dot">圓環</option></select><input type="color" id="s-csq-color" value="#000000" onchange="updateQR()" title="角落外框顏色"></div></div>
+                <div class="s-group"><div class="s-label">角落內框樣式</div><div class="s-row"><select class="s-select" id="s-cdot" onchange="updateQR()" style="flex:1"><option value="">和內部一致</option><option value="square">正方形</option><option value="dot">圓點</option></select><input type="color" id="s-cdot-color" value="#000000" onchange="updateQR()" title="角落內框顏色"></div></div>
+                <div class="s-group"><div class="s-label">Logo 圖片</div><div class="logo-upload-area"><input type="file" id="s-logo" accept="image/*" onchange="onLogoChange(event)"><button class="sm-btn danger" onclick="removeLogo()">移除</button></div><div style="margin-top:8px"><div class="s-label">Logo 大小 <span class="s-val" id="v-logo-size">0.4</span></div><input type="range" id="s-logo-size" min="0.1" max="0.5" step="0.02" value="0.4" oninput="onLogoSizeChange()"></div><div><div class="s-label">Logo 邊距 <span class="s-val" id="v-logo-margin">5</span></div><input type="range" id="s-logo-margin" min="0" max="20" value="5" oninput="onLogoMarginChange()"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-scan">
+        <div class="panel scan-box">
+            <div class="panel-title">掃描 / 解析 QR 碼</div>
+            <video id="camera-video" playsinline></video>
+            <div class="scan-btns">
+                <button class="scan-btn" id="btn-camera" onclick="toggleCamera()">📷 開啟相機掃描</button>
+                <button class="scan-btn" id="btn-clipboard" onclick="scanClipboard()">📋 從剪貼簿貼上</button>
+            </div>
+            <div class="scan-file"><input type="file" id="scan-file-input" accept="image/*" onchange="scanFile(event)"></div>
+            <div class="result-box" id="scan-result">
+                <div class="result-row"><input type="text" id="decoded-text" readonly placeholder="解析結果"><button class="dl-btn" onclick="copyDecoded()">複製</button></div>
+                <div class="result-actions"><button class="sm-btn" id="btn-open-link" onclick="openDecoded()" style="display:none">🔗 開啟連結</button><button class="sm-btn" onclick="useAsContent()">⬅ 用此內容產生 QR 碼</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="../../toolkit.html">返回十三工具包</a> · <a href="../../index.html">軒轅十三的個人空間</a>
+        <p style="margin-top:8px;">版權所有 © 2025 軒轅十三</p>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="返回頂部">↑</button>
+<div id="toast"></div>
+<script>window.addEventListener('scroll', () => { const b = document.getElementById('backToTop'); if (window.scrollY > 300) b.classList.add('show'); else b.classList.remove('show'); });</script>
+
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>簡繁．全形半形 即時轉換器 — 十三工具包</title>
+  <link rel="icon" type="image/png" href="ICON.png" />
+  <style>
+    :root {
+      --bg: #0D1B2A;
+      --card: #030b13;
+      --text: #fff;
+      --muted: rgba(255,255,255,0.6);
+      --accent: #F5DEB3;
+      --accent-dim: rgba(245,222,179,0.3);
+      --accent-bg: rgba(245,222,179,0.05);
+      --border: rgba(245,222,179,0.15);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,27,42,0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .top-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .top-nav a:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+    }
+
+    .back-to-top {
+      position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px;
+      border-radius: 50%; background: rgba(13,27,42,0.9); border: 1px solid var(--border);
+      color: var(--accent); font-size: 1.2rem; cursor: pointer; z-index: 999;
+      opacity: 0; visibility: hidden; transition: all .3s;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .back-to-top:hover { background: rgba(245,222,179,0.15); border-color: var(--accent); transform: translateY(-2px); }
+    .back-to-top.show { opacity: 1; visibility: visible; }
+
+    header {
+      padding: 20px 16px 15px;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(245,222,179,0.2);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      vertical-align: middle;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .panel:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .panel h3 {
+      color: var(--accent);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      border-color: var(--accent-dim);
+    }
+
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    button.active {
+      background: var(--accent);
+      color: #0D1B2A;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .stats {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .stats span {
+      margin-right: 16px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .two {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 900px) {
+      .two { grid-template-columns: 1fr 1fr; }
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+
+    .footer-area {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 24px 0 40px;
+    }
+
+    .footer-area a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-area a:hover {
+      text-decoration: underline;
+    }
+
+    .tooltip {
+      position: fixed;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 12px;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      border: 1px solid var(--border);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+</head>
+<body>
+  <div class="top-nav">
+    <a href="../../toolkit.html">← 返回十三工具包</a>
+    <a href="../../index.html">← 返回主站</a>
+  </div>
+
+  <header>
+    <h1>簡繁．全形半形 即時轉換器 <span class="tag">本地即時</span></h1>
+  </header>
+
+  <main class="wrap">
+    <section class="two">
+      <div class="panel">
+        <h3 style="margin:0 0 8px;">輸入</h3>
+        <textarea id="input" placeholder="貼上或輸入文字…"></textarea>
+        <div class="bar">
+          <button id="btnClear">清空</button>
+          <button id="btnCopyIn">複製輸入</button>
+          <button id="btnPasteConvert">貼上並轉換複製</button>
+        </div>
+        <div class="stats" id="inStats"></div>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin:0 0 8px;">即時預覽</h3>
+        <textarea id="output" readonly placeholder="結果會即時顯示"></textarea>
+        <div class="bar">
+          <button id="btnCopyOut">複製結果</button>
+        </div>
+        <div class="stats" id="outStats"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3 style="margin:0 0 8px;">轉換模式</h3>
+      <div class="bar">
+        <button class="mode-btn" data-group="sc" data-mode="t2s">繁 → 簡</button>
+        <button class="mode-btn" data-group="sc" data-mode="s2t">簡 → 繁</button>
+        <span style="width:12px;"></span>
+        <button class="mode-btn" data-group="width" data-mode="fw2hw">全形 → 半形</button>
+        <button class="mode-btn" data-group="width" data-mode="hw2fw">半形 → 全形</button>
+      </div>
+      <p class="muted">簡轉繁，繁轉簡，二選一。全轉半，半轉全，二選一。</p>
+    </section>
+  </main>
+
+  <div class="footer-area">
+    opencc-js 詞彙級簡繁轉換｜全形半形為原生映射｜即時字數統計
+    <br><br>
+    <a href="../../toolkit.html">返回十三工具包</a> · <a href="../../index.html">軒轅十三的個人空間</a>
+    <br><br>
+    版權所有 © 2025 軒轅十三
+  </div>
+
+  <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="返回頂部">↑</button>
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const toHalfWidth = str => str
+      .replace(/\u3000/g, ' ')
+      .replace(/[\uFF01-\uFF5E]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0));
+
+    const toFullWidth = str => str
+      .replace(/ /g, '\u3000')
+      .replace(/[!-~]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0xFEE0));
+
+    let convT2S = null, convS2T = null;
+    const ensureOpenCC = () => {
+      if (!window.OpenCC) return false;
+      if (!convT2S) convT2S = OpenCC.Converter({ from: 'tw', to: 'cn' });
+      if (!convS2T) convS2T = OpenCC.Converter({ from: 'cn', to: 'twp' });
+      return true;
+    };
+
+    const $in   = document.getElementById('input');
+    const $out  = document.getElementById('output');
+    const $inStats  = document.getElementById('inStats');
+    const $outStats = document.getElementById('outStats');
+    const $tooltip = document.getElementById('tooltip');
+
+    let scMode = null;
+    let widthMode = null;
+
+    const showTooltip = (text, x, y) => {
+      $tooltip.textContent = text;
+      $tooltip.style.left = `${x}px`;
+      $tooltip.style.top = `${y}px`;
+      $tooltip.style.opacity = 1;
+      setTimeout(() => { $tooltip.style.opacity = 0; }, 2000);
+    };
+
+    function countText(text) {
+      const total = text.length;
+      const noSpace = text.replace(/\s/g, '').length;
+      const pure = text.replace(/[\p{P}\p{Z}\p{S}\p{C}]/gu, '').length;
+      return { total, noSpace, pure };
+    }
+
+    function updateStats() {
+      const inCount = countText($in.value);
+      const outCount = countText($out.value);
+      $inStats.innerHTML = `<span>總字數：${inCount.total}</span><span>不含空白：${inCount.noSpace}</span><span>純文字：${inCount.pure}</span>`;
+      $outStats.innerHTML = `<span>總字數：${outCount.total}</span><span>不含空白：${outCount.noSpace}</span><span>純文字：${outCount.pure}</span>`;
+    }
+
+    const convert = () => {
+      let text = $in.value || '';
+      if (scMode === 't2s' && convT2S) text = convT2S(text);
+      if (scMode === 's2t' && convS2T) text = convS2T(text);
+      if (widthMode === 'fw2hw') text = toHalfWidth(text);
+      if (widthMode === 'hw2fw') text = toFullWidth(text);
+      $out.value = text;
+      updateStats();
+    };
+
+    let timer = null;
+    const debouncedConvert = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { convert(); }, 150);
+    };
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        const mode  = btn.dataset.mode;
+        if (group === 'sc') {
+          if (scMode === mode) { scMode = null; btn.classList.remove('active'); }
+          else { scMode = mode; document.querySelectorAll('[data-group="sc"]').forEach(b => b.classList.remove('active')); btn.classList.add('active'); ensureOpenCC(); }
+        }
+        if (group === 'width') {
+          if (widthMode === mode) { widthMode = null; btn.classList.remove('active'); }
+          else { widthMode = mode; document.querySelectorAll('[data-group="width"]').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+        }
+        convert();
+      });
+    });
+
+    $in.addEventListener('input', () => { debouncedConvert(); if (!timer) updateStats(); });
+
+    document.getElementById('btnClear').onclick = () => { $in.value = ''; $out.value = ''; updateStats(); $in.focus(); };
+
+    document.getElementById('btnCopyIn').onclick = async function() {
+      if ($in.value) {
+        await navigator.clipboard.writeText($in.value);
+        const rect = this.getBoundingClientRect();
+        showTooltip('已複製輸入內容', rect.left + rect.width/2 - 40, rect.top - 30);
+      }
+    };
+
+    document.getElementById('btnCopyOut').onclick = async function() {
+      if ($out.value) {
+        await navigator.clipboard.writeText($out.value);
+        const rect = this.getBoundingClientRect();
+        showTooltip('已複製結果內容', rect.left + rect.width/2 - 40, rect.top - 30);
+      }
+    };
+
+    document.getElementById('btnPasteConvert').onclick = async () => {
+      try {
+        $in.value = '';
+        $out.value = '';
+        const pasteText = await navigator.clipboard.readText();
+        $in.value = pasteText;
+        convert();
+        if ($out.value) {
+          await navigator.clipboard.writeText($out.value);
+          const rect = document.getElementById('btnPasteConvert').getBoundingClientRect();
+          showTooltip('已貼上並複製轉換結果', rect.left + rect.width/2 - 80, rect.top - 30);
+        }
+      } catch (err) {
+        console.error('貼上失敗：', err);
+        const rect = document.getElementById('btnPasteConvert').getBoundingClientRect();
+        showTooltip('貼上失敗，請手動貼上', rect.left + rect.width/2 - 60, rect.top - 30);
+      }
+      updateStats();
+      $in.focus();
+    };
+
+    ensureOpenCC();
+    updateStats();
+
+    window.addEventListener('scroll', () => { const b = document.getElementById('backToTop'); if (window.scrollY > 300) b.classList.add('show'); else b.classList.remove('show'); });
+  </script>
+</body>
+</html>

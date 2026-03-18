@@ -156,7 +156,7 @@ html, body {
     align-items: center;
     min-height: 70vh;
     padding: 2rem 0;
-    margin-top: 0;
+    margin-top: 70px; /* 預留固定導覽列高度，避免內容被推上去或蓋住 */
 }
 
 .hero-content {
@@ -591,6 +591,23 @@ width: 100%;    /* 讓標題占滿整行 */
 /* 當有圖片放大時，其他圖片變暗 */
 .zoomed ~ .zoomable {
     opacity: 0.3;
+}
+
+/* 平面設計菜單圖片樣式：較大、響應式，滑鼠懸浮時放大 */
+.menu-image {
+    width: 680px; /* 預設更大的顯示寬度 */
+    max-width: 95%;
+    height: auto;
+    display: block;
+    margin: 0.6rem auto 0 auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    border: 0;
+    border-radius: 6px;
+}
+.menu-image:hover {
+    transform: scale(1.12);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
 }
 
 /* 分隔線樣式 */

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://rebane2001.com/discord-colored-text-generator/ -->
+<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="icon" type="image/x-icon" href="https://rebane2001.com/favicon.ico">
+<title>Discord 文字顏色生成器</title>
+
+<meta name="description" content="Discord 文字顏色生成器">
+<meta name="author" content="DCT">
+<style>
+/*
+This license applies to the entire page, not just the style block.
+    
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <https://unlicense.org>
+*/
+
+    html {
+        font-family: 'Noto Sans TC', sans-serif;
+        background: linear-gradient(135deg, #1a1c1f 0%, #2c2f33 100%);
+        text-align: center;
+        color: #FFF;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background: rgba(47, 49, 54, 0.6);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        background: linear-gradient(45deg, #5865F2, #EB459E);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .flex {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    #textarea {
+        width: 80%;
+        height: 200px;
+        border-radius: 10px;
+        resize: both;
+        overflow: auto;
+        text-align: left;
+        font-family: 'Noto Sans Mono', monospace;
+        background-color: #2F3136;
+        color: #B9BBBE;
+        border: 2px solid #202225;
+        padding: 15px;
+        display: inline-block;
+        white-space: pre-wrap;
+        font-size: 1rem;
+        line-height: 1.5;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    #textarea:empty:before {
+        content: '在這裡輸入文字，選取後點擊上方按鈕來更改顏色和樣式！';
+        color: #72767d;
+        position: absolute;
+        pointer-events: none;
+        font-style: italic;
+    }
+
+    #textarea:focus {
+        border-color: #5865F2;
+        box-shadow: 0 0 10px rgba(88,101,242,0.3);
+    }
+
+    .button {
+        min-height: 40px;
+        min-width: 40px;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        background: linear-gradient(45deg, #5865F2, #4752C4);
+        font-size: 16px;
+        padding: 8px 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 5px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(88,101,242,0.4);
+    }
+
+    .style-button {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        margin: 5px;
+        transition: all 0.3s ease;
+        background: none;
+    }
+
+    .style-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    .controls-container {
+        background: rgba(47, 49, 54, 0.4);
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px auto;
+        max-width: 600px;
+    }
+
+    .color-group {
+        margin: 15px 0;
+    }
+
+    .color-group-label {
+        font-weight: bold;
+        color: #5865F2;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+    }
+
+    a,a:visited {
+        color: #00AFF4
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        background-color: #3BA55D;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 16px;
+        top: 0;
+    }
+
+.ansi-1 { font-weight:700; text-decoration:none; }
+.ansi-4 { font-weight:500; text-decoration:underline; }
+
+/* 文字顏色 */
+.ansi-30 { color: #4f545c !important; }
+.ansi-31 { color: #dc322f !important; }
+.ansi-32 { color: #859900 !important; }
+.ansi-33 { color: #b58900 !important; }
+.ansi-34 { color: #268bd2 !important; }
+.ansi-35 { color: #d33682 !important; }
+.ansi-36 { color: #2aa198 !important; }
+.ansi-37 { color: #ffffff !important; }
+
+/* 背景顏色按鈕 */
+.ansi-30-bg { background-color: #4f545c !important; border: 2px solid #ffffff33 !important; }
+.ansi-31-bg { background-color: #dc322f !important; border: 2px solid #ffffff33 !important; }
+.ansi-32-bg { background-color: #859900 !important; border: 2px solid #ffffff33 !important; }
+.ansi-33-bg { background-color: #b58900 !important; border: 2px solid #ffffff33 !important; }
+.ansi-34-bg { background-color: #268bd2 !important; border: 2px solid #ffffff33 !important; }
+.ansi-35-bg { background-color: #d33682 !important; border: 2px solid #ffffff33 !important; }
+.ansi-36-bg { background-color: #2aa198 !important; border: 2px solid #ffffff33 !important; }
+.ansi-37-bg { background-color: #ffffff !important; border: 2px solid #ffffff33 !important; }
+
+/* 背景顏色文字 */
+.ansi-40 { background-color: #002b36 !important; border: 2px solid #ffffff33 !important; }
+.ansi-41 { background-color: #cb4b16 !important; border: 2px solid #ffffff33 !important; }
+.ansi-42 { background-color: #586e75 !important; border: 2px solid #ffffff33 !important; }
+.ansi-43 { background-color: #657b83 !important; border: 2px solid #ffffff33 !important; }
+.ansi-44 { background-color: #839496 !important; border: 2px solid #ffffff33 !important; }
+.ansi-45 { background-color: #6c71c4 !important; border: 2px solid #ffffff33 !important; }
+.ansi-46 { background-color: #93a1a1 !important; border: 2px solid #ffffff33 !important; }
+.ansi-47 { background-color: #fdf6e3 !important; border: 2px solid #ffffff33 !important; }
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Sans+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Discord 文字顏色生成器</h1>
+    
+    <div class="controls-container">
+        <div class="color-group">
+            <button data-ansi="0" class="button">重置格式</button>
+            <button data-ansi="1" class="button style-button ansi-1">B</button>
+            <button data-ansi="4" class="button style-button ansi-4">U</button>
+        </div>
+
+        <div class="color-group">
+            <div class="color-group-label">文字顏色</div>
+            <button data-ansi="30" class="button style-button ansi-30-bg" title="深灰色">&nbsp;</button>
+            <button data-ansi="31" class="button style-button ansi-31-bg" title="紅色">&nbsp;</button>
+            <button data-ansi="32" class="button style-button ansi-32-bg" title="綠色">&nbsp;</button>
+            <button data-ansi="33" class="button style-button ansi-33-bg" title="金色">&nbsp;</button>
+            <button data-ansi="34" class="button style-button ansi-34-bg" title="藍色">&nbsp;</button>
+            <button data-ansi="35" class="button style-button ansi-35-bg" title="粉色">&nbsp;</button>
+            <button data-ansi="36" class="button style-button ansi-36-bg" title="青色">&nbsp;</button>
+            <button data-ansi="37" class="button style-button ansi-37-bg" title="白色">&nbsp;</button>
+        </div>
+
+        <div class="color-group">
+            <div class="color-group-label">背景顏色</div>
+            <button data-ansi="40" class="button style-button ansi-40" title="深藍黑">&nbsp;</button>
+            <button data-ansi="41" class="button style-button ansi-41" title="深褐色">&nbsp;</button>
+            <button data-ansi="42" class="button style-button ansi-42" title="灰色">&nbsp;</button>
+            <button data-ansi="43" class="button style-button ansi-43" title="淺灰色">&nbsp;</button>
+            <button data-ansi="44" class="button style-button ansi-44" title="亮灰色">&nbsp;</button>
+            <button data-ansi="45" class="button style-button ansi-45" title="Discord藍">&nbsp;</button>
+            <button data-ansi="46" class="button style-button ansi-46" title="淺灰色">&nbsp;</button>
+            <button data-ansi="47" class="button style-button ansi-47" title="米白色">&nbsp;</button>
+        </div>
+    </div>
+
+    <div class="flex">
+        <div id="textarea" contenteditable="true"></div>
+    </div>
+    
+    <button class="button copy">複製 Discord 格式文字</button>
+</div>
+
+<div class="tooltip" style="display: none; top: 258.038px; left: 858.612px;">White</div>
+<script type="text/javascript">
+    const textarea = document.querySelector("#textarea");
+    const copybtn = document.querySelector(".button.copy");
+    const tooltip = document.querySelector(".tooltip");
+    const resetBtn = document.querySelector('[data-ansi="0"]');
+
+    const tooltipTexts = {
+        // FG
+        "30": "深灰色",
+        "31": "紅色",
+        "32": "綠色",
+        "33": "金色",
+        "34": "藍色",
+        "35": "粉色",
+        "36": "青色",
+        "37": "白色",
+        // BG
+        "40": "深藍黑",
+        "41": "深褐色",
+        "42": "灰色",
+        "43": "淺灰色",
+        "44": "亮灰色",
+        "45": "Discord藍",
+        "46": "淺灰色",
+        "47": "米白色",
+    };
+
+    // 重置格式按鈕功能
+    resetBtn.addEventListener('click', () => {
+        const text = textarea.textContent;
+        textarea.innerHTML = text;
+    });
+
+    // 一些基本的 HTML 轉義，避免貼上的內容破壞格式
+    textarea.oninput = () => {
+        const base = textarea.innerHTML.replace(/<(\/?(br|span|span class="ansi-[0-9]*"))>/g,"[$1]");
+        if (base.includes("<") || base.includes(">")) textarea.innerHTML = base.replace(/<.*?>/g,"").replace(/[<>]/g,"").replace(/\[(\/?(br|span|span class="ansi-[0-9]*"))\]/g,"<$1>");
+    };
+
+    // 處理 Enter 鍵
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            document.execCommand('insertLineBreak')
+            event.preventDefault()
+        }
+    });
+
+    // 按鈕功能
+    document.querySelectorAll(".style-button").forEach((btn) => {
+        btn.onclick = () => {
+            if (!btn.dataset.ansi) {
+                textarea.innerText = textarea.innerText;
+                return;
+            }
+
+            const selection = window.getSelection();
+            const text = window.getSelection().toString();
+            
+            if (text.length === 0) return; // 如果沒有選取文字，不執行任何操作
+
+            const span = document.createElement("span");
+            span.innerText = text;
+            span.classList.add(`ansi-${btn.dataset.ansi}`);
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(span);
+
+            // 保持選取狀態
+            range.selectNodeContents(span);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        };
+
+        // 顯示提示文字
+        btn.onmouseenter = () => {
+            if (!(btn.dataset.ansi > 4)) return;
+            const rect = btn.getBoundingClientRect();
+            tooltip.style.display = "block";
+            tooltip.innerText = tooltipTexts[btn.dataset.ansi] || "";
+            tooltip.style.top = `${rect.top - 36}px`;
+            tooltip.style.left = `${rect.left - tooltip.clientWidth/2 + btn.clientWidth/2}px`;
+        };
+        btn.onmouseleave = () => {
+            tooltip.style.display = "none";
+        };
+    });
+
+    // 複製功能
+    let copyCount = 0;
+    let copyTimeout = null;
+
+    copybtn.onclick = () => {
+        const toCopy = "```ansi\n" + nodesToANSI(textarea.childNodes, [{ fg: 2, bg: 2, st:2 }]) + "\n```";
+        navigator.clipboard.writeText(toCopy).then(() => {
+            if (copyTimeout) clearTimeout(copyTimeout);
+
+            const funnyCopyMessages = ["已複製！", "連續複製！", "三連複製！", "超級複製！", "無敵複製！", "神級複製！", "究極複製！", "傳說複製！", "史詩複製！", "宇宙級！", "超越極限！", "∞"];
+
+            copybtn.style.backgroundColor = (copyCount <= 8) ? "#3BA55D" : "#ED4245";
+            copybtn.innerText = funnyCopyMessages[copyCount];
+            copyCount = Math.min(11, copyCount + 1);
+            copyTimeout = setTimeout(() => {
+                copyCount = 0;
+                copybtn.style.backgroundColor = null;
+                copybtn.innerText = "複製 Discord 格式文字";
+            }, 2000)
+
+        }, (err) => {
+            if (copyCount > 2) return;
+            alert("複製失敗，請手動複製以下內容：");
+            alert(toCopy);
+        });
+    }
+
+    function nodesToANSI(nodes, states) {
+        let text = ""
+        for (const node of nodes) {
+            if (node.nodeType === 3) {
+                text += node.textContent;
+                continue;
+            }
+            if (node.nodeName === "BR") {
+                text += "\n";
+                continue;   
+            }
+            const ansiCode = +(node.className.split("-")[1]);
+            const newState = Object.assign({}, states.at(-1));
+
+            if (ansiCode < 30) newState.st = ansiCode;
+            if (ansiCode >= 30 && ansiCode < 40) newState.fg = ansiCode;
+            if (ansiCode >= 40) newState.bg = ansiCode;
+
+            states.push(newState)
+            text += `\x1b[${newState.st};${(ansiCode >= 40) ? newState.bg : newState.fg}m`;
+            text += nodesToANSI(node.childNodes, states);
+            states.pop()
+            text += `\x1b[0m`;
+            if (states.at(-1).fg !== 2) text += `\x1b[${states.at(-1).st};${states.at(-1).fg}m`;
+            if (states.at(-1).bg !== 2) text += `\x1b[${states.at(-1).st};${states.at(-1).bg}m`;
+        }
+        return text;
+    }
+</script>
+
+</body></html>

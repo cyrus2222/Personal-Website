@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>燕雲十六聲 - 美食位置圖鑑 — 十三工具包</title>
+    <style>
+        :root {
+            --bg: #0D1B2A; --card: #0a1628; --card2: #060e1a;
+            --text: #fff; --muted: rgba(255,255,255,0.55);
+            --accent: #F5DEB3; --accent-dim: rgba(245,222,179,0.3);
+            --accent-bg: rgba(245,222,179,0.06); --border: rgba(245,222,179,0.15);
+            --gold: #daa520;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, "Microsoft JhengHei", "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .wrap { max-width: 1400px; margin: 0 auto; padding: 16px; }
+
+        .top-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(13,27,42,0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); padding: 10px 16px;
+            display: flex; gap: 10px; flex-wrap: wrap; margin: -16px -16px 12px; width: calc(100% + 32px);
+        }
+        .top-nav a { color: var(--accent); text-decoration: none; font-size: .85rem; letter-spacing: .1em; padding: .4rem 1rem; border: 1px solid var(--border); border-radius: 999px; transition: all .3s; display: inline-block; }
+        .top-nav a:hover { background: var(--accent-bg); border-color: var(--accent); }
+
+        .back-to-top {
+            position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px;
+            border-radius: 50%; background: rgba(13,27,42,0.9); border: 1px solid var(--border);
+            color: var(--accent); font-size: 1.2rem; cursor: pointer; z-index: 999;
+            opacity: 0; visibility: hidden; transition: all .3s;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        .back-to-top:hover { background: rgba(245,222,179,0.15); border-color: var(--accent); transform: translateY(-2px); }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+
+        h1 { text-align: center; color: var(--accent); font-size: 1.8rem; margin: 20px 0 8px; letter-spacing: .1em; text-shadow: 0 0 18px rgba(245,222,179,.2); }
+        .subtitle { text-align: center; color: var(--muted); font-size: .9rem; margin-bottom: 30px; }
+
+        h2 {
+            color: var(--accent); font-size: 1.25rem; letter-spacing: .08em;
+            border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin: 50px 0 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        h2::before { content: '◆'; font-size: .7rem; color: var(--gold); }
+
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; table-layout: fixed; }
+        th, td { border: 1px solid var(--border); padding: 10px; text-align: center; vertical-align: middle; }
+        th { background: rgba(245,222,179,0.08); color: var(--accent); font-size: .85rem; letter-spacing: .1em; font-weight: 600; }
+        td { font-size: .88rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
+
+        .img-box {
+            position: relative; width: 100%; height: 130px;
+            border: 2px solid rgba(245,222,179,0.25); border-radius: 6px;
+            background: var(--card2); overflow: hidden; cursor: pointer; transition: all .3s;
+        }
+        .img-box:hover { border-color: var(--gold); box-shadow: 0 0 15px rgba(218,165,32,0.3); }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 2; }
+
+        .img-box::before {
+            content: "圖片載入中…"; position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--muted); font-size: .75rem; z-index: 1;
+        }
+
+        /* ── Lightbox ── */
+        .lightbox {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.92); justify-content: center; align-items: center;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox img { max-width: 92%; max-height: 92vh; border: 3px solid var(--accent); border-radius: 8px; box-shadow: 0 0 40px rgba(245,222,179,0.2); }
+        .lightbox .close { position: absolute; top: 15px; right: 30px; color: var(--accent); font-size: 50px; cursor: pointer; transition: color .2s; line-height: 1; }
+        .lightbox .close:hover { color: #fff; }
+
+        /* ── Search ── */
+        .search-bar {
+            display: flex; gap: 10px; margin-bottom: 24px; align-items: center; flex-wrap: wrap;
+        }
+        .search-bar input {
+            flex: 1; min-width: 200px; padding: 10px 14px; background: var(--card); color: var(--text);
+            border: 1px solid var(--border); border-radius: 8px; font-size: .9rem; outline: none; transition: border-color .3s;
+        }
+        .search-bar input:focus { border-color: var(--accent-dim); }
+        .search-bar input::placeholder { color: var(--muted); }
+        .filter-btn {
+            padding: 8px 16px; background: var(--card); border: 1px solid var(--border); color: var(--muted);
+            border-radius: 999px; cursor: pointer; font-size: .82rem; transition: all .2s; white-space: nowrap;
+        }
+        .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .filter-btn.active { background: var(--accent); color: #0D1B2A; border-color: var(--accent); font-weight: 600; }
+        .no-result { text-align: center; color: var(--muted); padding: 30px; font-size: .9rem; display: none; }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; }
+            tr { margin-bottom: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+            td { text-align: left; padding: 10px 14px; border: none; border-bottom: 1px solid rgba(245,222,179,0.06); position: relative; padding-left: 40%; }
+            td::before { content: attr(data-label); position: absolute; left: 14px; top: 10px; font-weight: 600; color: var(--accent); font-size: .78rem; width: 35%; }
+            td:first-child { background: rgba(245,222,179,0.04); font-weight: 600; color: var(--accent); padding-left: 14px; text-align: center; }
+            td:first-child::before { display: none; }
+            .img-box { height: 180px; }
+        }
+
+        .footer { text-align: center; color: var(--muted); font-size: .78rem; padding: 24px 0; margin-top: 20px; border-top: 1px solid var(--border); }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top-nav">
+        <a href="../../toolkit.html">← 返回十三工具包</a>
+        <a href="../../index.html">← 返回主站</a>
+    </div>
+
+    <h1>燕雲十六聲 - 美食位置圖鑑</h1>
+    <p class="subtitle">生活暴擊率料理攤販位置一覽｜點擊圖片可放大檢視</p>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="搜尋攤販名稱、地點、料理名或效果…" oninput="filterTable()">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">全部</button>
+        <button class="filter-btn" data-filter="採藥" onclick="setFilter(this)">採藥</button>
+        <button class="filter-btn" data-filter="挖礦" onclick="setFilter(this)">挖礦</button>
+        <button class="filter-btn" data-filter="釣魚" onclick="setFilter(this)">釣魚</button>
+        <button class="filter-btn" data-filter="狩獵" onclick="setFilter(this)">狩獵</button>
+        <button class="filter-btn" data-filter="砍伐" onclick="setFilter(this)">砍伐</button>
+    </div>
+
+    <h2>清河地區</h2>
+    <table id="table-qinghe">
+        <thead><tr><th style="width:10%">攤販位置</th><th style="width:18%">位置圖（點擊放大）</th><th style="width:36%">招牌菜（15短陌錢）</th><th style="width:36%">私房菜（50短陌錢）</th></tr></thead>
+        <tbody>
+        <tr><td data-label="">元甜甜 - 神仙渡</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/元甜甜-神仙渡.png"></td><td data-label="招牌菜">蜜汁梨球<br>釣魚暴擊率+7.5%，20分鐘</td><td data-label="私房菜">八寶梨罐<br>釣魚暴擊率+15%，20分鐘</td></tr>
+        <tr><td data-label="">元咸咸 - 神仙渡</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/元咸咸-神仙渡.png"></td><td data-label="招牌菜">把子肉<br>狩獵暴擊率+7.5%，20分鐘</td><td data-label="私房菜">酥鍋<br>狩獵暴擊率+15%，20分鐘</td></tr>
+        <tr><td data-label="">燕豐子 - 豐禾村</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/燕豐子-豐禾村.png"></td><td data-label="招牌菜">醬炒田螺<br>採藥暴擊率+7.5%，20分鐘</td><td data-label="私房菜">螺絲肉<br>採藥暴擊率+15%，20分鐘</td></tr>
+        <tr><td data-label="">潘明榮 - 慈心鎮</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/潘明榮-慈心鎮.png"></td><td data-label="招牌菜">棗蒸餅<br>採藥暴擊率+7.5%，20分鐘</td><td data-label="私房菜">七寶蒸餅<br>採藥暴擊率+15%，20分鐘</td></tr>
+        <tr><td data-label="">李大娘 - 伏馬莊</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/李大娘-伏馬莊.png"></td><td data-label="招牌菜">馬酥酪<br>挖礦暴擊率+7.5%，20分鐘</td><td data-label="私房菜">辣酥酪<br>挖礦暴擊率+15%，20分鐘</td></tr>
+        </tbody>
+    </table>
+
+    <h2>開封地區</h2>
+    <table id="table-kaifeng">
+        <thead><tr><th style="width:10%">攤販位置</th><th style="width:18%">位置圖（點擊放大）</th><th style="width:36%">招牌菜（15短陌錢）</th><th style="width:36%">私房菜（50短陌錢）</th></tr></thead>
+        <tbody>
+        <tr><td data-label="">牛莽 - 角門里</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/牛莽-角門里.png"></td><td data-label="招牌菜">麥飯<br>採藥+10%，10分鐘</td><td data-label="私房菜">炒雞麵<br>採藥+20%，10分鐘</td></tr>
+        <tr><td data-label="">於不遲 - 南門大街</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/于不遲-南門大街.png"></td><td data-label="招牌菜">鮮魚麵<br>採藥+10%、挖礦+10%，20分鐘</td><td data-label="私房菜">汆魚圓<br>採藥+20%、挖礦+20%，20分鐘</td></tr>
+        <tr><td data-label="">沈二 - 南門大街</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/沈二-南門大街.png"></td><td data-label="招牌菜">柳葉韭<br>砍伐+10%、挖礦+10%，20分鐘</td><td data-label="私房菜">假煎肉<br>砍伐+20%、挖礦+20%，20分鐘</td></tr>
+        <tr><td data-label="">夜辛 - 勾欄瓦肆</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/夜辛-勾欄瓦肆.png"></td><td data-label="招牌菜">批切羊頭<br>釣魚+10%，10分鐘</td><td data-label="私房菜">凍薑醬蹄子<br>釣魚+20%，10分鐘</td></tr>
+        <tr><td data-label="">蕭善仁 - 勾欄瓦肆</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/蕭善仁-勾欄瓦肆.png"></td><td data-label="招牌菜">茶蘼粥<br>砍伐+10%，10分鐘</td><td data-label="私房菜">七寶素粥<br>砍伐+20%，10分鐘</td></tr>
+        <tr><td data-label="">尹千霜 - 勾欄瓦肆</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/尹千霜-勾欄瓦肆.png"></td><td data-label="招牌菜">豆蔻飲<br>狩獵+10%，10分鐘</td><td data-label="私房菜">水晶皂兒<br>狩獵+20%，10分鐘</td></tr>
+        <tr><td data-label="">郝閑 - 鬼市子</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/郝閑-鬼市子.png"></td><td data-label="招牌菜">黃泉釀<br>挖礦+10%，10分鐘</td><td data-label="私房菜">忘川渡<br>挖礦+20%，10分鐘</td></tr>
+        <tr><td data-label="">方甜甜 - 金明池</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/方甜甜-金明池.png"></td><td data-label="招牌菜">葡萄飲子<br>釣魚+10%、挖礦+10%，20分鐘</td><td data-label="私房菜">櫻桃煎<br>釣魚+20%、挖礦+20%，20分鐘</td></tr>
+        <tr><td data-label="">大刀陳 - 御苑北</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/大刀陳-御苑北.png"></td><td data-label="招牌菜">銀絲魚脍<br>採藥+10%、砍伐+10%，20分鐘</td><td data-label="私房菜">旋切魚脍<br>採藥+20%、砍伐+20%，20分鐘</td></tr>
+        <tr><td data-label="">王其順 - 承恩鎮</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/王其順-承恩鎮.png"></td><td data-label="招牌菜">筍肉饅頭<br>狩獵+10%、挖礦+10%，20分鐘</td><td data-label="私房菜">通神餅<br>狩獵+20%、挖礦+20%，20分鐘</td></tr>
+        <tr><td data-label="">石面 - 承恩鎮</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/石面-承恩鎮.png"></td><td data-label="招牌菜">蘿菔麵<br>砍伐+10%、釣魚+10%，20分鐘</td><td data-label="私房菜">百合麵<br>砍伐+20%、釣魚+20%，20分鐘</td></tr>
+        <tr><td data-label="">湯谷 - 鴻溝古渠</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/湯谷-鴻溝古渠.png"></td><td data-label="招牌菜">冰涼茶湯<br>採藥+10%、釣魚+10%，20分鐘</td><td data-label="私房菜">水飯<br>採藥+20%、釣魚+20%，20分鐘</td></tr>
+        <tr><td data-label="">伏苓 - 清心圃</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/伏苓-清心圃.png"></td><td data-label="招牌菜">金玉羹<br>採藥+10%、狩獵+10%，20分鐘</td><td data-label="私房菜">菊苗煎<br>採藥+20%、狩獵+20%，20分鐘</td></tr>
+        <tr><td data-label="">海無量 - 萬勝鎮</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/海無量-萬勝鎮.png"></td><td data-label="招牌菜">老味胡辣湯<br>採藥+10%、挖礦+10%，20分鐘</td><td data-label="私房菜">兩摻兒<br>採藥+20%、挖礦+20%，20分鐘</td></tr>
+        <tr><td data-label="">馬曼兒 - 萬勝鎮</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/馬曼兒-萬勝鎮.png"></td><td data-label="招牌菜">蕨菜餛飩<br>砍伐+10%、狩獵+10%，20分鐘</td><td data-label="私房菜">百味餛飩<br>砍伐+20%、狩獵+20%，20分鐘</td></tr>
+        <tr><td data-label="">鮮有餘 - 天上來</td><td data-label="位置圖" class="img-box" onclick="openLightbox(this.querySelector('img'))"><img src="./images/鮮有餘-天上來.png"></td><td data-label="招牌菜">醃鹹魚<br>狩獵+10%、釣魚+10%，20分鐘</td><td data-label="私房菜">鮑味鹹魚<br>狩獵+20%、釣魚+20%，20分鐘</td></tr>
+        </tbody>
+    </table>
+
+    <p class="no-result" id="noResult">沒有找到符合的結果</p>
+
+    <div class="footer">
+        <a href="../../toolkit.html">返回十三工具包</a> · <a href="../../index.html">軒轅十三的個人空間</a>
+        <p style="margin-top:8px;">版權所有 © 2025 軒轅十三</p>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="返回頂部">↑</button>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="close" onclick="closeLightbox()">×</span>
+    <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function openLightbox(img) {
+    if (img && img.src) {
+        document.getElementById('lightbox-img').src = img.src;
+        document.getElementById('lightbox').classList.add('active');
+    }
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+window.addEventListener('scroll', () => { const b = document.getElementById('backToTop'); if (window.scrollY > 300) b.classList.add('show'); else b.classList.remove('show'); });
+
+let currentFilter = 'all';
+
+function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    filterTable();
+}
+
+function filterTable() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll('table tbody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const matchSearch = !query || text.includes(query);
+        const matchFilter = currentFilter === 'all' || text.includes(currentFilter);
+        const show = matchSearch && matchFilter;
+        row.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+    });
+
+    document.getElementById('noResult').style.display = visibleCount === 0 ? 'block' : 'none';
+
+    document.querySelectorAll('h2').forEach(h2 => {
+        const table = h2.nextElementSibling;
+        if (table && table.tagName === 'TABLE') {
+            const hasVisible = [...table.querySelectorAll('tbody tr')].some(r => r.style.display !== 'none');
+            h2.style.display = hasVisible ? '' : 'none';
+            table.style.display = hasVisible ? '' : 'none';
+        }
+    });
+}
+</script>
+</body>
+</html>
