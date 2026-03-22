@@ -13,7 +13,7 @@
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, "Microsoft JhengHei", "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-        .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+        .wrap { max-width: 1400px; margin: 0 auto; padding: 16px; }
 
         .top-nav {
             position: sticky; top: 0; z-index: 100;
@@ -28,104 +28,21 @@
         .subtitle { text-align: center; color: var(--muted); font-size: .78rem; margin-bottom: 20px; letter-spacing: .06em; }
         .subtitle a { color: var(--accent); text-decoration: none; }
 
-        /* Tabs */
-        .tabs {
-            display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border: 1px solid var(--border);
-            border-radius: 10px; padding: 4px; max-width: 520px; margin-left: auto; margin-right: auto;
+        .sheet-hint {
+            text-align: center; color: var(--muted); font-size: .78rem; margin: 0 0 12px;
+            line-height: 1.6;
         }
-        .tab-btn {
-            flex: 1; padding: 10px 12px; background: transparent; border: none; color: var(--muted);
-            border-radius: 8px; cursor: pointer; font-size: .85rem; letter-spacing: .06em; transition: all .2s; font-family: inherit; white-space: nowrap;
+        .sheet-hint a { color: var(--accent); }
+        .sheet-wrap {
+            width: 100%; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+            background: var(--card); min-height: 70vh;
         }
-        .tab-btn.active { background: var(--accent); color: #0D1B2A; font-weight: 600; }
-        .tab-btn:not(.active):hover { color: var(--accent); }
-
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-
-        /* Section cards */
-        .section { margin-bottom: 24px; }
-        .section-title {
-            font-size: 1.15rem; color: var(--accent); font-weight: 600; letter-spacing: .08em;
-            padding: 12px 16px; background: var(--card); border: 1px solid var(--border);
-            border-radius: 10px 10px 0 0; border-bottom: 2px solid var(--accent-dim);
+        .sheet-frame {
+            width: 100%; height: 75vh; min-height: 520px; border: 0; display: block;
         }
-        .section-body {
-            background: var(--card); border: 1px solid var(--border); border-top: none;
-            border-radius: 0 0 10px 10px; overflow: hidden;
-        }
-        .section-intro {
-            padding: 14px 16px; color: rgba(255,255,255,0.75); font-size: .88rem; line-height: 1.8;
-            border-bottom: 1px solid var(--border); white-space: pre-line;
-        }
-
-        /* Skill rows */
-        .skill-row {
-            display: grid; grid-template-columns: 120px 1fr; border-bottom: 1px solid var(--border);
-            transition: background .2s;
-        }
-        .skill-row:last-child { border-bottom: none; }
-        .skill-row:hover { background: var(--accent-bg); }
-        .skill-name {
-            padding: 12px 16px; font-weight: 600; color: var(--accent); font-size: .88rem;
-            border-right: 1px solid var(--border); display: flex; align-items: flex-start;
-        }
-        .skill-desc {
-            padding: 12px 16px; color: rgba(255,255,255,0.8); font-size: .88rem; line-height: 1.7;
-        }
-
         @media (max-width: 600px) {
-            .skill-row { grid-template-columns: 1fr; }
-            .skill-name { border-right: none; border-bottom: 1px solid rgba(245,222,179,0.06); padding: 10px 16px 6px; }
-            .skill-desc { padding: 6px 16px 12px; }
+            .sheet-frame { height: 65vh; min-height: 420px; }
         }
-
-        /* Info table for tab 2 */
-        .info-table {
-            width: 100%; border-collapse: collapse; background: var(--card);
-            border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
-        }
-        .info-table th {
-            background: rgba(245,222,179,0.08); color: var(--accent); font-weight: 600;
-            padding: 12px 14px; text-align: center; font-size: .85rem; letter-spacing: .06em;
-            border: 1px solid var(--border); border-top: none;
-        }
-        .info-table th:first-child { border-left: none; }
-        .info-table th:last-child { border-right: none; }
-        .info-table td {
-            padding: 11px 14px; border: 1px solid var(--border);
-            color: rgba(255,255,255,0.8); font-size: .85rem; line-height: 1.6; vertical-align: top;
-        }
-        .info-table td:first-child { border-left: none; }
-        .info-table td:last-child { border-right: none; }
-        .info-table tr:last-child td { border-bottom: none; }
-        .info-table tr:hover td { background: var(--accent-bg); }
-        .info-table .row-header {
-            color: var(--accent); font-weight: 600; white-space: nowrap; min-width: 80px;
-            text-align: center;
-        }
-        .info-table td {
-            text-align: center;
-        }
-        .info-table td .cell-inner {
-            display: inline-block; text-align: left; max-width: 100%;
-        }
-
-        .diagonal-cell {
-            position: relative; width: 80px; height: 50px;
-            background: linear-gradient(to top right,
-                transparent calc(50% - 0.5px), var(--border) calc(50% - 0.5px),
-                var(--border) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-                rgba(245,222,179,0.08);
-        }
-        .diag-top { position: absolute; top: 4px; right: 8px; font-size: .78rem; }
-        .diag-bottom { position: absolute; bottom: 4px; left: 8px; font-size: .78rem; }
-
-        .note-box {
-            padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-            color: rgba(255,255,255,0.7); font-size: .85rem; line-height: 1.7; margin-bottom: 20px;
-        }
-        .note-box strong { color: var(--accent); }
 
         .footer { text-align: center; color: var(--muted); font-size: .78rem; padding: 24px 0; margin-top: 20px; border-top: 1px solid var(--border); }
         .footer a { color: var(--accent); text-decoration: none; } .footer a:hover { text-decoration: underline; }
@@ -150,177 +67,19 @@
     </div>
 
     <h1>燕雲十六聲國際服 牽絲霖攻略</h1>
-    <p class="subtitle">2026/03/14 更新 ｜ Youtube：<a href="https://www.youtube.com/@Xuanyuan13" target="_blank" rel="noopener">@Xuanyuan13</a></p>
+    <p class="subtitle">2026/03/22 更新 ｜ Youtube：<a href="https://www.youtube.com/@Xuanyuan13" target="_blank" rel="noopener">@Xuanyuan13</a></p>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('tab1')">技能認知</button>
-        <button class="tab-btn" onclick="switchTab('tab2')">牽絲霖各情況配置</button>
-        <button class="tab-btn" onclick="switchTab('tab3')">牽絲霖分支派別</button>
-    </div>
-
-    <!-- ========== Tab 1: 技能認知 ========== -->
-    <div id="tab1" class="tab-panel active">
-
-        <div class="section">
-            <div class="section-title">明川藥典</div>
-            <div class="section-body">
-                <div class="section-intro">【復活選擇級別】
-五人本只有1名奶媽：負責機制者＞高輸出
-十人本只有2名奶媽：奶媽＞負責機制者＞高輸出
-要有一個思維，若奶媽和輸出都倒，且復活次數夠，要先復活奶媽，這樣該名被拉的奶媽可以拉躺下的輸出
-
-【開場連招】
-千香傘武學技 > 簫吟千浪 > 千香傘特殊技 > 切扇子 > 扇子武學技恢復精元
-
-【多人王氣竭連招】
-切成千香傘 > 武學技 >（可以的話穿插神龍吐火）> 蓄力重擊 > 特殊技掛傘 > 切扇子</div>
-                <div class="skill-row">
-                    <div class="skill-name">輕擊</div>
-                    <div class="skill-desc">若隊友打本打的很順，則可以多利用輕擊和奇術補傷害</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">重擊</div>
-                    <div class="skill-desc">沒事就放，還能回露水</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">武學技</div>
-                    <div class="skill-desc">大團失血再開。若大團重度失血則開第二段來爆發治療，或可利用第二段自動上傘</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">特殊技</div>
-                    <div class="skill-desc">一個或兩個人失血再開，搭配重擊補滿血和回露水。若復活人，也是開這招搭配重擊補滿復活對象</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">特殊技2</div>
-                    <div class="skill-desc">復活。請確保自己不會因攻擊被打斷動作，以免復活失敗。復活後，可搭配特殊技+重擊補滿</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">易武技</div>
-                    <div class="skill-desc">開千香的武學技和特殊技後，若隊友沒滿血，則用易武技切成明川</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">千香引魂蠱</div>
-            <div class="section-body">
-                <div class="skill-row">
-                    <div class="skill-name">武學技</div>
-                    <div class="skill-desc">開場開。之後要注意不要開在機制上，讓大家可以吃增傷好好打</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">特殊技</div>
-                    <div class="skill-desc">平時一直開啟掛在身上。掛傘期間可以透過直接發動武學技來拿下傘</div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-name">重擊</div>
-                    <div class="skill-desc">平時千香傘一直掛著，多人王虛弱時可以透過武學技拿下來並使用蓄力重擊，延長王的氣竭時間</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ========== Tab 2: 牽絲霖各情況配置 ========== -->
-    <div id="tab2" class="tab-panel">
-
-        <div style="overflow-x:auto; margin-bottom: 20px;">
-            <table class="info-table" style="table-layout:fixed;">
-                <colgroup>
-                    <col style="width:80px;">
-                    <col style="width:22%;">
-                    <col>
-                    <col style="width:26%;">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th class="diagonal-cell"><span class="diag-top">情況</span><span class="diag-bottom">配置</span></th>
-                        <th>打本/單人</th>
-                        <th>競速打本/輸出奶</th>
-                        <th>百業戰</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">套裝</td>
-                        <td colspan="2"><span class="cell-inner">浣花：自信黨<br>時雨：手殘黨或想兼顧一點輸出，這樣沒滿血時也能打輸出<br>防具梨雪</span></td>
-                        <td><span class="cell-inner">時雨<br>百業戰常常掉血，浣花不適合<br>防具御無缺</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">懶人</td>
-                        <td colspan="3"><span class="cell-inner">三方都想顧的話，直接走時雨+御無缺</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">心法</td>
-                        <td><span class="cell-inner">易水歌/君臣藥/杏花不見/千絲蠱</span></td>
-                        <td><span class="cell-inner">易水歌/君臣藥/杏花不見or千絲蠱/怒斬馬</span></td>
-                        <td><span class="cell-inner">千絲蠱/君臣藥/杏花不見/指玄篇註</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">奇術</td>
-                        <td><span class="cell-inner">有帶無相金身就好<br>其他隨意</span></td>
-                        <td><span class="cell-inner">無相金身、簫吟千浪、神龍吐火、太白醉月</span></td>
-                        <td><span class="cell-inner">保護：無相金身<br>打控制金蟬騰躍、獅吼正聲<br>防身用：韋陀正法、清風霽月</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">調律</td>
-                        <td colspan="3"><span class="cell-inner">必要：小外攻到750、小牽絲到197、175點敏<br>首選：扇子增療、雨傘增療、勁、小外攻、大外攻、會心率（敏有到175的話，面板黃字74.75%就好）、敏<br>次選：小牽絲、大牽絲</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header" rowspan="2">定音</td>
-                        <td colspan="2" rowspan="2"><span class="cell-inner">武器：外攻穿透&gt;牽絲穿透<br>其他：明川藥典武學技&gt;千香引魂蠱特殊技</span></td>
-                        <td rowspan="2"><span class="cell-inner">武器止戈定音<br>定音用PVE的就好<br>環：千時餘響<br>佩：點翠沾衣<br>頭：解控獲得強韌<br>衣服：受擊減傷<br>褲子鞋子不強求</span></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                    <tr>
-                        <td class="row-header">天工</td>
-                        <td colspan="3"><span class="cell-inner">比較建議水天工，加快恢復精元</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header" rowspan="2">備註</td>
-                        <td colspan="2"><span class="cell-inner">通常副本不該死人，所以我不喜歡帶指玄篇註</span></td>
-                        <td rowspan="2"><span class="cell-inner">百業戰常常在拉人，尤其常常要拉嗟夫刀法，所以帶指玄效益高<br>開打前可以吃料理增加攻擊力，以此增加奶量。<br>
-                        絕對要帶杏花，因為百業戰主要依靠扇子武學技與絕學進行大量補血。透過杏花疊層，群體治療量的效益會提高。而且百業戰中，對手會開啟補量衰減，此時就能靠杏花抵銷影響。
-                        </span></td>
-                    </tr>
-                    <tr>
-                        <td><span class="cell-inner">溢奶的話，可以把千絲蠱和杏花不見改成怒斬馬和征人歸<br>可以另外組單人套，塞個怒斬馬、所恨年年等，不然單人時全帶奶量心法沒啥傷害</span></td>
-                        <td><span class="cell-inner">征人歸六重後，把杏花不見or千絲蠱換成征人歸<br>開場可以開簫吟千浪</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-    <!-- ========== Tab 3: 牽絲霖分支派別 ========== -->
-    <div id="tab3" class="tab-panel">
-
-        <div style="overflow-x:auto; margin-bottom: 20px;">
-            <table class="info-table">
-                <thead>
-                    <tr>
-                        <th style="min-width:80px;"></th>
-                        <th>繩標奶</th>
-                        <th>九重+明川</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">攻略</td>
-                        <td><span class="cell-inner"><a href="https://forum.gamer.com.tw/C.php?bsn=75703&snA=2162" target="_blank" rel="noopener" style="color:var(--accent);">https://forum.gamer.com.tw/C.php?bsn=75703&snA=2162</a></span></td>
-                        <td><span class="cell-inner">心法：花上月令、易水歌、所恨年年、極樂泣血<br>裝備：飛隼+鷹揚</span></td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">備註</td>
-                        <td><span class="cell-inner">輸出能打到第一，這情況有極大機率是隊友輸出都有問題，包含手法不是每個人都能駕馭，請勿盲目模仿，確定自己理解後再說<br>僅適合固定團/朋友團搭配，在路人場容易被罵、整體奶量不足</span></td>
-                        <td><span class="cell-inner">一定要隨時注意左下角隊友血量狀況<br>很多人玩這套只顧著輸出</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+    <p class="sheet-hint">
+        <a href="https://docs.google.com/spreadsheets/d/1NpOxDc0aDbgdXHHgn_9Lqdd_pBF-FaZROxm6_8HkdpA/edit?usp=sharing" target="_blank" rel="noopener">
+    </p>
+    <div class="sheet-wrap">
+        <iframe
+            class="sheet-frame"
+            title="燕雲十六聲國際服 牽絲霖攻略（Google 試算表）"
+            src="https://docs.google.com/spreadsheets/d/1NpOxDc0aDbgdXHHgn_9Lqdd_pBF-FaZROxm6_8HkdpA/preview"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
     </div>
 
     <div class="footer">
@@ -332,15 +91,6 @@
 <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="返回頂部">↑</button>
 
 <script>
-function switchTab(id) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    const idx = ['tab1','tab2','tab3'].indexOf(id);
-    document.querySelectorAll('.tab-btn')[idx].classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 window.addEventListener('scroll', () => {
     const b = document.getElementById('backToTop');
     if (window.scrollY > 300) b.classList.add('show'); else b.classList.remove('show');
