@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>軒轅十三－文明罵人</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/13.png" type="image/png">
+    <style>
+        .container { display: flex; }
+        .sidebar { width: 250px; background: rgba(0, 0, 0, 0.5); padding: 1rem; min-height: 100vh; }
+        .sidebar h2 { color: #F5DEB3; text-align: center; border-bottom: 2px solid #F5DEB3; padding-bottom: 10px; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { padding: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar a { color: #F5DEB3; text-decoration: none; flex-grow: 1; }
+        .main-content { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .synopsis { max-width: 860px; width: 100%; text-align: left; line-height: 1.28; }
+        .synopsis h2 { margin: 0 0 0.08rem; line-height: 1.3; }
+        .civil-list { padding-left: 1.4rem; margin: 0; }
+        .civil-list li { margin: 0.16rem 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.html"><img src="images/13.png" alt="網站Logo"></a>
+            <h1 class="logo cyberpunk-text">軒轅十三的個人空間</h1>
+        </div>
+        <button class="menu-toggle">☰</button>
+        <ul class="nav-links">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="writing.html" class="active">寫作專區</a></li>
+            <li><a href="art.html">繪圖專區</a></li>
+            <li><a href="videos.html">影音專區</a></li>
+            <li><a href="toolkit.html">十三工具包</a></li>
+            <li><a href="recommend-tools.html">大推工具</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <button id="sidebar-toggle" class="sidebar-toggle">
+            <img id="sidebar-toggle-icon" src="images/側目錄按鈕.png" alt="側目錄按鈕">
+        </button>
+
+        <aside class="sidebar" id="sidebar">
+            <h2>寫作目錄</h2>
+            <ul>
+                <li class="novel-item">
+                    <div class="novel-title">
+                        <a href="prose.html">散文</a>
+                    </div>
+                </li>
+                <li class="novel-item">
+                    <div class="novel-title">
+                        <a href="civilized-insults.html" class="active">文明罵人</a>
+                    </div>
+                </li>
+            </ul>
+        </aside>
+
+        <section class="main-content">
+            <div class="synopsis">
+                <h2>《文明罵人》</h2>
+                <ol class="civil-list">
+                    <li>少吃點鹽，看你那麼閒</li>
+                    <li>說話那麼髒，上廁所沒衛生紙嗎</li>
+                    <li>有空一起吃魚吧，你那麼會挑刺</li>
+                    <li>你是什麼牌的垃圾袋，那麼會裝</li>
+                    <li>兵器種類千千萬，你怎麼這麼喜歡劍</li>
+                    <li>別對我大呼小叫，我怕狗</li>
+                    <li>你不當廚師就可惜了，這麼會甩鍋</li>
+                    <li>是不是有喝風油精，這麼愛說風涼話</li>
+                    <li>觸景生情，你佔了兩個字，第一和第三個字</li>
+                    <li>怎麼不下雨了，你讓我無語了</li>
+                    <li>你肺活量一定很大，不然怎麼這麼會吹</li>
+                    <li>你象棋一定很好吧，你蠻會馬後炮的</li>
+                    <li>金子會發光，但你是玻璃碎片，只會反光</li>
+                    <li>你的人生跟空白書一樣，只有前言</li>
+                    <li>你那麼會抬槓，幹嘛不去參加舉重比賽</li>
+                    <li>我猜你凌晨一點出生，因為那時是丑時</li>
+                </ol>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-blocks">
+            <div class="footer-block" style="background: #3498db; width: 100px; height: 100px; left: 10%; top: 20%;"></div>
+            <div class="footer-block" style="background: #2ecc71; width: 80px; height: 80px; right: 15%; top: 10%;"></div>
+            <div class="footer-block" style="background: #e74c3c; width: 120px; height: 60px; left: 30%; bottom: 20%;"></div>
+            <div class="footer-block" style="background: #f1c40f; width: 70px; height: 70px; right: 25%; bottom: 30%;"></div>
+        </div>
+        <div class="footer-content">
+            <p>版權所有：&copy; 2025 軒轅十三</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.getElementById("sidebar");
+            const sidebarToggle = document.getElementById("sidebar-toggle");
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("show");
+            });
+        });
+    </script>
+</body>
+</html>

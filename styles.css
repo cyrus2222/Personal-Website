@@ -24,13 +24,19 @@ html, body {
     justify-content: space-between;
     align-items: center;
     background: #030b13;
-    padding: 1rem;
+    padding: 0 1rem;
+    height: 72px;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
     box-sizing: border-box;
+}
+
+/* 共用內容容器，避開固定導覽列 */
+.container {
+    margin-top: 70px;
 }
 
 .logo-container {
@@ -53,6 +59,7 @@ html, body {
 .nav-links {
     list-style: none;
     display: flex;
+    align-items: center;
     gap: 1rem;
     flex-wrap: nowrap;
     white-space: nowrap;
@@ -67,15 +74,19 @@ html, body {
 .nav-links a {
     color: white;
     text-decoration: none;
-    padding-bottom: 5px;
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding-bottom: 0;
     padding-right: 10px;
 }
 
 .nav-links a.active {
     color: #F5DEB3;
     border-bottom: 3px solid #F5DEB3;
-    display: inline-block;
-    padding-bottom: 5px;
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 0;
 }
 
 /* 新增這一條，讓 logo 的顏色不受影響 */
