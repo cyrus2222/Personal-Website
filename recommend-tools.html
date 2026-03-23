@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>軒轅十三－大推工具目錄</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <style>
+        body { margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
+        .recommend-hero {
+            position: relative;
+            min-height: 100vh;
+            padding: 2rem 1rem 4rem;
+            margin-top: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .recommend-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+        #bgCanvas { width: 100%; height: 100%; display: block; }
+        .recommend-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .recommend-header h2 {
+            font-size: 2.3rem;
+            color: #F5DEB3;
+            letter-spacing: 0.12em;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(245, 222, 179, 0.25);
+        }
+        .recommend-header p {
+            margin-top: 0.8rem;
+            color: rgba(255, 255, 255, 0.65);
+            letter-spacing: 0.08em;
+            font-size: 0.95rem;
+        }
+        .recommend-grid {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+        .recommend-card {
+            position: relative;
+            border: 1px solid rgba(245, 222, 179, 0.2);
+            border-radius: 14px;
+            padding: 1.3rem 1.1rem;
+            background: linear-gradient(135deg, rgba(3, 11, 19, 0.92), rgba(22, 27, 34, 0.96));
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .recommend-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #F5DEB3, transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .recommend-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(245, 222, 179, 0.45);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(245, 222, 179, 0.08);
+        }
+        .recommend-card:hover::before {
+            transform: scaleX(1);
+        }
+        .recommend-card h3 {
+            margin: 0 0 0.8rem;
+            color: #F5DEB3;
+            font-size: 1.7rem;
+            letter-spacing: 0.08em;
+        }
+        .recommend-card ul {
+            margin: 0;
+            padding-left: 0;
+            list-style: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.16rem;
+            line-height: 1.65;
+            font-weight: 500;
+        }
+        .recommend-card li { margin: 0.24rem 0; }
+        .recommend-card a {
+            color: rgba(255, 255, 255, 0.92);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(245, 222, 179, 0.45);
+            transition: all 0.2s ease;
+        }
+        .recommend-card a:hover {
+            color: #F5DEB3;
+            border-bottom-color: #F5DEB3;
+        }
+        .card-image {
+            display: block;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 0.9rem;
+            border: 1px solid rgba(245, 222, 179, 0.2);
+        }
+        .back-link {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            border: 1px solid rgba(245, 222, 179, 0.25);
+            border-radius: 999px;
+            padding: 0.55rem 1.2rem;
+            letter-spacing: 0.08em;
+            transition: all 0.25s;
+            background: rgba(3, 11, 19, 0.6);
+        }
+        .back-link:hover {
+            color: #F5DEB3;
+            border-color: #F5DEB3;
+            background: rgba(245, 222, 179, 0.08);
+            box-shadow: 0 0 18px rgba(245, 222, 179, 0.15);
+        }
+        @media (max-width: 600px) {
+            .recommend-header h2 { font-size: 1.8rem; }
+            .recommend-card h3 { font-size: 1.4rem; }
+            .recommend-card ul { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.html"><img src="images/logo.png" alt="網站Logo"></a>
+            <h1 class="logo cyberpunk-text">軒轅十三的個人空間</h1>
+        </div>
+        <button class="menu-toggle">☰</button>
+        <ul class="nav-links">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="writing.html">寫作專區</a></li>
+            <li><a href="art.html">繪圖專區</a></li>
+            <li><a href="videos.html">影音專區</a></li>
+            <li><a href="toolkit.html">十三工具包</a></li>
+            <li><a href="recommend-tools.html" class="active">大推工具</a></li>
+        </ul>
+    </nav>
+
+    <section class="recommend-hero">
+        <div class="recommend-bg"><canvas id="bgCanvas"></canvas></div>
+        <div class="recommend-header">
+            <h2>大推工具目錄</h2>
+            <p>精選 AI 工具整理</p>
+        </div>
+
+        <div class="recommend-grid">
+            <article class="recommend-card">
+                <h3>圖片生成</h3>
+                <ul>
+                    <li><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>、<a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a></li>
+                    <li><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener">即夢國際</a>、<a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>影片生成</h3>
+                <ul>
+                    <li><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener">即夢國際</a>、<a href="https://openai.com/sora" target="_blank" rel="noopener">Sora2</a></li>
+                    <li><a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>翻譯、圖片轉文字</h3>
+                <ul>
+                    <li><a href="https://translate.google.com.tw/?hl=zh-TW" target="_blank" rel="noopener">Google 翻譯</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>分離人聲</h3>
+                <ul>
+                    <li><a href="https://vocalremover.org/zh/" target="_blank" rel="noopener">vocalremover.org</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>聲音轉文字、字幕</h3>
+                <ul>
+                    <li><a href="https://www.csubtitle.com/text/" target="_blank" rel="noopener">cSubtitle</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>換臉</h3>
+                <ul>
+                    <li><a href="https://viggle.ai/app/home" target="_blank" rel="noopener">Viggle</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>文字轉 AI 配音</h3>
+                <ul>
+                    <li><a href="https://ondoku3.com/zh-hant/" target="_blank" rel="noopener">Ondoku</a>、<a href="https://noiz.ai/tts/creation" target="_blank" rel="noopener">Noiz AI</a></li>
+                </ul>
+            </article>
+        </div>
+
+        <a class="back-link" href="index.html">← 返回首頁</a>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-blocks">
+            <div class="footer-block" style="background: #3498db; width: 100px; height: 100px; left: 10%; top: 20%;"></div>
+            <div class="footer-block" style="background: #2ecc71; width: 80px; height: 80px; right: 15%; top: 10%;"></div>
+            <div class="footer-block" style="background: #e74c3c; width: 120px; height: 60px; left: 30%; bottom: 20%;"></div>
+            <div class="footer-block" style="background: #f1c40f; width: 70px; height: 70px; right: 25%; bottom: 30%;"></div>
+        </div>
+        <div class="footer-content">
+            <p>版權所有：&copy; 2025 軒轅十三</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        const canvas = document.getElementById("bgCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            const heroSection = document.querySelector(".recommend-hero");
+            if (heroSection) {
+                canvas.width = window.innerWidth;
+                canvas.height = heroSection.offsetHeight;
+            }
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        const shapes = [];
+        for (let i = 0; i < 45; i++) {
+            let r = Math.floor(Math.random() * 80) + 30;
+            let g = Math.floor(Math.random() * 80) + 30;
+            let b = Math.floor(Math.random() * 80) + 30;
+            shapes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 36 + 10,
+                dx: Math.random() * 1.4 - 0.7,
+                dy: Math.random() * 1.4 - 0.7,
+                color: `rgba(${r}, ${g}, ${b}, 0.45)`
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(13, 27, 42, 0.95)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            shapes.forEach(shape => {
+                ctx.fillStyle = shape.color;
+                ctx.beginPath();
+                ctx.arc(shape.x, shape.y, shape.size, 0, Math.PI * 2);
+                ctx.fill();
+                shape.x += shape.dx;
+                shape.y += shape.dy;
+                if (shape.x <= 0 || shape.x >= canvas.width) shape.dx *= -1;
+                if (shape.y <= 0 || shape.y >= canvas.height) shape.dy *= -1;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

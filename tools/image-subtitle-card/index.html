@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>給圖片上字幕/字卡 — 十三工具包</title>
+    <style>
+        :root {
+            --bg: #0D1B2A;
+            --card: #0a1628;
+            --card2: #060e1a;
+            --text: #fff;
+            --muted: rgba(255,255,255,0.6);
+            --accent: #F5DEB3;
+            --border: rgba(245,222,179,0.16);
+            --accent-bg: rgba(245,222,179,0.08);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .top-nav {
+            position: sticky; top: 0; z-index: 20;
+            background: rgba(13,27,42,0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); padding: 10px 16px;
+            display: flex; gap: 10px; flex-wrap: wrap; margin: -16px -16px 14px;
+            width: calc(100% + 32px);
+        }
+        .top-nav a {
+            color: var(--accent); text-decoration: none; font-size: .84rem; letter-spacing: .09em;
+            padding: .4rem 1rem; border: 1px solid var(--border); border-radius: 999px; transition: all .25s;
+        }
+        .top-nav a:hover { background: var(--accent-bg); border-color: var(--accent); }
+        h1 {
+            text-align: center; color: var(--accent); letter-spacing: .08em;
+            margin: 12px 0 6px; font-size: 1.7rem;
+        }
+        .subtitle {
+            text-align: center; color: var(--muted); margin-bottom: 16px; font-size: .85rem; letter-spacing: .05em;
+        }
+
+        .layout { display: grid; grid-template-columns: 360px 1fr; gap: 14px; }
+        @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        .panel-title {
+            color: var(--accent); font-size: .84rem; letter-spacing: .1em; margin-bottom: 10px;
+            border-bottom: 1px solid rgba(245,222,179,0.12); padding-bottom: 8px;
+        }
+        .controls { display: grid; gap: 14px; }
+        .field { display: grid; gap: 7px; }
+        .field label { color: var(--muted); font-size: .78rem; letter-spacing: .05em; }
+        .field textarea, .field select, .field input[type="number"], .field input[type="range"], .field input[type="color"] {
+            width: 100%;
+        }
+        .field textarea, .field select, .field input[type="number"] {
+            background: var(--card2); color: var(--text);
+            border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none;
+            font-family: inherit;
+        }
+        .field textarea { min-height: 96px; resize: vertical; line-height: 1.6; }
+        .num-slider { display: grid; grid-template-columns: 84px 1fr; gap: 8px; align-items: center; }
+        .num-slider input[type="range"] { accent-color: var(--accent); }
+        .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .toggles { display: flex; flex-wrap: wrap; gap: 8px; }
+        .toggle {
+            border: 1px solid var(--border); background: var(--card2); color: var(--muted);
+            border-radius: 8px; padding: 8px 10px; cursor: pointer; font-size: .8rem;
+            min-width: 58px; transition: all .2s;
+        }
+        .toggle.active { background: var(--accent); color: #0D1B2A; border-color: var(--accent); font-weight: 700; }
+        .align-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .align-btn {
+            border: 1px solid var(--border); background: var(--card2); color: var(--muted);
+            border-radius: 8px; padding: 8px 0; cursor: pointer; font-size: .8rem;
+        }
+        .align-btn.active { background: var(--accent); color: #0D1B2A; border-color: var(--accent); font-weight: 700; }
+        .actions { display: grid; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(245,222,179,0.12); }
+        .btn {
+            border: 1px solid var(--border); background: var(--card2); color: var(--text);
+            border-radius: 8px; padding: 10px 12px; cursor: pointer; font-size: .86rem; transition: all .2s;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn.primary { background: var(--accent); border-color: var(--accent); color: #0D1B2A; font-weight: 700; }
+        .btn.primary:hover { filter: brightness(1.05); color: #0D1B2A; }
+
+        .preview-wrap {
+            position: relative;
+            background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px;
+            min-height: 520px; display: flex; align-items: flex-start; justify-content: center;
+            overflow: hidden;
+        }
+        .preview-toolbar {
+            position: absolute; top: 12px; right: 12px; z-index: 5;
+            display: flex; gap: 6px; background: rgba(6,14,26,0.82);
+            border: 1px solid var(--border); border-radius: 8px; padding: 6px;
+        }
+        .preview-btn {
+            border: 1px solid var(--border); background: var(--card2); color: var(--text);
+            border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: .76rem;
+        }
+        .preview-btn:hover { color: var(--accent); border-color: var(--accent); }
+        #canvas {
+            display: none;
+            max-width: 100%; max-height: 78vh; border-radius: 8px; background: #0a0f19;
+            border: 1px solid rgba(245,222,179,0.1);
+            transform-origin: top left;
+            transition: transform 0.04s linear;
+        }
+        .empty-canvas {
+            width: min(100%, 520px);
+            height: 300px;
+            border-radius: 8px;
+            border: 1px solid rgba(245,222,179,0.1);
+            background: #0a0f19;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 14px;
+        }
+        .upload-tip { color: var(--muted); font-size: .86rem; text-align: center; line-height: 1.7; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top-nav">
+        <a href="../../toolkit.html">← 返回十三工具包</a>
+        <a href="../../index.html">← 返回主站</a>
+    </div>
+
+    <h1>給圖片上字幕/字卡</h1>
+    <p class="subtitle">上傳圖片，輸入文字後即可套用樣式並匯出</p>
+
+    <div class="layout">
+        <div class="panel">
+            <div class="panel-title">文字設定</div>
+            <div class="controls">
+                <div class="field">
+                    <label for="imgInput">上傳圖片</label>
+                    <input id="imgInput" type="file" accept="image/*">
+                </div>
+                <div class="field">
+                    <label for="textInput">字幕 / 字卡內容</label>
+                    <textarea id="textInput" placeholder="輸入要顯示在圖片上的文字（可換行）">這是一段示範字幕</textarea>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="boxSelect">目標文字區塊</label>
+                        <select id="boxSelect"></select>
+                    </div>
+                    <div class="field">
+                        <label>區塊管理</label>
+                        <div class="row2">
+                            <button class="btn" id="addBoxBtn" type="button">新增</button>
+                            <button class="btn" id="removeBoxBtn" type="button">刪除</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="fontFamily">字體</label>
+                    <select id="fontFamily">
+                        <option value='Arial, "Microsoft JhengHei", "Noto Sans TC", sans-serif'>預設無襯線</option>
+                        <option value='"Microsoft JhengHei", "Noto Sans TC", sans-serif'>微軟正黑體</option>
+                        <option value='"Noto Serif TC", "PMingLiU", serif'>中文明體</option>
+                        <option value='"Courier New", monospace'>等寬字體</option>
+                    </select>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="fontSize">文字大小</label>
+                        <div class="num-slider">
+                            <input id="fontSize" type="number" min="12" max="240" value="52">
+                            <input id="fontSizeRange" type="range" min="12" max="240" value="52">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="lineHeight">行高倍率</label>
+                        <div class="num-slider">
+                            <input id="lineHeight" type="number" min="1" max="3" step="0.1" value="1.3">
+                            <input id="lineHeightRange" type="range" min="1" max="3" step="0.1" value="1.3">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>水平對齊</label>
+                    <div class="align-group">
+                        <button class="align-btn" data-align="left">靠左</button>
+                        <button class="align-btn active" data-align="center">置中</button>
+                        <button class="align-btn" data-align="right">靠右</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>垂直對齊</label>
+                    <div class="align-group">
+                        <button class="align-btn active" data-valign="top">靠上</button>
+                        <button class="align-btn" data-valign="middle">置中</button>
+                        <button class="align-btn" data-valign="bottom">靠下</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>字體樣式</label>
+                    <div class="toggles">
+                        <button class="toggle" id="boldBtn">粗體</button>
+                        <button class="toggle" id="italicBtn">斜體</button>
+                        <button class="toggle" id="underlineBtn">底線</button>
+                        <button class="toggle" id="strikeBtn">刪除線</button>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="textColor">文字顏色</label>
+                        <input id="textColor" type="color" value="#ffffff">
+                    </div>
+                    <div class="field">
+                        <label for="bgColor">底色</label>
+                        <input id="bgColor" type="color" value="#000000">
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="bgAlpha">底色不透明度</label>
+                        <div class="num-slider">
+                            <input id="bgAlpha" type="number" min="0" max="1" step="0.05" value="0.45">
+                            <input id="bgAlphaRange" type="range" min="0" max="1" step="0.05" value="0.45">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="padding">文字內距</label>
+                        <div class="num-slider">
+                            <input id="padding" type="number" min="0" max="120" value="18">
+                            <input id="paddingRange" type="range" min="0" max="120" value="18">
+                        </div>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="strokeColor">邊框顏色</label>
+                        <input id="strokeColor" type="color" value="#000000">
+                    </div>
+                    <div class="field">
+                        <label for="strokeWidth">邊框粗細</label>
+                        <div class="num-slider">
+                            <input id="strokeWidth" type="number" min="0" max="20" value="4">
+                            <input id="strokeWidthRange" type="range" min="0" max="20" value="4">
+                        </div>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="shadowColor">陰影顏色</label>
+                        <input id="shadowColor" type="color" value="#000000">
+                    </div>
+                    <div class="field">
+                        <label for="shadowAlpha">陰影不透明度</label>
+                        <div class="num-slider">
+                            <input id="shadowAlpha" type="number" min="0" max="1" step="0.05" value="0.8">
+                            <input id="shadowAlphaRange" type="range" min="0" max="1" step="0.05" value="0.8">
+                        </div>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="shadowBlur">陰影模糊</label>
+                        <div class="num-slider">
+                            <input id="shadowBlur" type="number" min="0" max="80" value="14">
+                            <input id="shadowBlurRange" type="range" min="0" max="80" value="14">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="shadowSize">陰影大小</label>
+                        <div class="num-slider">
+                            <input id="shadowSize" type="number" min="0" max="5" step="0.1" value="1">
+                            <input id="shadowSizeRange" type="range" min="0" max="5" step="0.1" value="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="shadowX">陰影 X 位移</label>
+                        <div class="num-slider">
+                            <input id="shadowX" type="number" min="-80" max="80" value="0">
+                            <input id="shadowXRange" type="range" min="-80" max="80" value="0">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="shadowY">陰影 Y 位移</label>
+                        <div class="num-slider">
+                            <input id="shadowY" type="number" min="-80" max="80" value="2">
+                            <input id="shadowYRange" type="range" min="-80" max="80" value="2">
+                        </div>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="field">
+                        <label for="posX">文字區塊 X (%)</label>
+                        <div class="num-slider">
+                            <input id="posX" type="number" min="0" max="100" value="50">
+                            <input id="posXRange" type="range" min="0" max="100" value="50">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="posY">文字區塊 Y (%)</label>
+                        <div class="num-slider">
+                            <input id="posY" type="number" min="0" max="100" value="86">
+                            <input id="posYRange" type="range" min="0" max="100" value="86">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="boxWidth">文字區塊寬度 (%)</label>
+                    <div class="num-slider">
+                        <input id="boxWidth" type="number" min="20" max="100" value="90">
+                        <input id="boxWidthRange" type="range" min="20" max="100" value="90">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="boxHeight">文字區塊高度 (%)</label>
+                    <div class="num-slider">
+                        <input id="boxHeight" type="number" min="6" max="90" value="28">
+                        <input id="boxHeightRange" type="range" min="6" max="90" value="28">
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn" id="resetBtn">重設樣式</button>
+                    <button class="btn primary" id="downloadBtn">下載圖片</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-wrap">
+            <div class="preview-toolbar">
+                <button class="preview-btn" id="zoomOutBtn" type="button">-</button>
+                <button class="preview-btn" id="zoomInBtn" type="button">+</button>
+                <button class="preview-btn" id="resetViewBtn" type="button">重置視圖</button>
+            </div>
+            <div id="emptyCanvas" class="empty-canvas">
+                <p class="upload-tip" id="uploadTip">請先上傳一張圖片，右側會即時預覽字卡效果。</p>
+            </div>
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const uploadTip = document.getElementById("uploadTip");
+const emptyCanvas = document.getElementById("emptyCanvas");
+const previewWrap = document.querySelector(".preview-wrap");
+
+const state = {
+    img: null,
+    boxes: [],
+    activeBoxId: null,
+    interaction: { mode: null, startX: 0, startY: 0, base: null },
+    view: {
+        scale: 1,
+        offsetX: 0,
+        offsetY: 0,
+        isPanning: false,
+        panStartX: 0,
+        panStartY: 0,
+        panBaseX: 0,
+        panBaseY: 0
+    }
+};
+
+const controls = {
+    imgInput: document.getElementById("imgInput"),
+    boxSelect: document.getElementById("boxSelect"),
+    addBoxBtn: document.getElementById("addBoxBtn"),
+    removeBoxBtn: document.getElementById("removeBoxBtn"),
+    textInput: document.getElementById("textInput"),
+    fontFamily: document.getElementById("fontFamily"),
+    fontSize: document.getElementById("fontSize"),
+    fontSizeRange: document.getElementById("fontSizeRange"),
+    lineHeight: document.getElementById("lineHeight"),
+    lineHeightRange: document.getElementById("lineHeightRange"),
+    textColor: document.getElementById("textColor"),
+    bgColor: document.getElementById("bgColor"),
+    bgAlpha: document.getElementById("bgAlpha"),
+    bgAlphaRange: document.getElementById("bgAlphaRange"),
+    padding: document.getElementById("padding"),
+    paddingRange: document.getElementById("paddingRange"),
+    strokeColor: document.getElementById("strokeColor"),
+    strokeWidth: document.getElementById("strokeWidth"),
+    strokeWidthRange: document.getElementById("strokeWidthRange"),
+    shadowColor: document.getElementById("shadowColor"),
+    shadowAlpha: document.getElementById("shadowAlpha"),
+    shadowAlphaRange: document.getElementById("shadowAlphaRange"),
+    shadowBlur: document.getElementById("shadowBlur"),
+    shadowBlurRange: document.getElementById("shadowBlurRange"),
+    shadowSize: document.getElementById("shadowSize"),
+    shadowSizeRange: document.getElementById("shadowSizeRange"),
+    shadowX: document.getElementById("shadowX"),
+    shadowXRange: document.getElementById("shadowXRange"),
+    shadowY: document.getElementById("shadowY"),
+    shadowYRange: document.getElementById("shadowYRange"),
+    posX: document.getElementById("posX"),
+    posXRange: document.getElementById("posXRange"),
+    posY: document.getElementById("posY"),
+    posYRange: document.getElementById("posYRange"),
+    boxWidth: document.getElementById("boxWidth"),
+    boxWidthRange: document.getElementById("boxWidthRange"),
+    boxHeight: document.getElementById("boxHeight"),
+    boxHeightRange: document.getElementById("boxHeightRange"),
+    zoomInBtn: document.getElementById("zoomInBtn"),
+    zoomOutBtn: document.getElementById("zoomOutBtn"),
+    resetViewBtn: document.getElementById("resetViewBtn"),
+    downloadBtn: document.getElementById("downloadBtn"),
+    resetBtn: document.getElementById("resetBtn"),
+    boldBtn: document.getElementById("boldBtn"),
+    italicBtn: document.getElementById("italicBtn"),
+    underlineBtn: document.getElementById("underlineBtn"),
+    strikeBtn: document.getElementById("strikeBtn")
+};
+
+function hexToRgba(hex, alpha) {
+    const v = hex.replace("#", "");
+    const n = parseInt(v, 16);
+    const r = (n >> 16) & 255;
+    const g = (n >> 8) & 255;
+    const b = n & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function createDefaultBox() {
+    return {
+        id: `box-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        text: "這是一段示範字幕",
+        fontFamily: 'Arial, "Microsoft JhengHei", "Noto Sans TC", sans-serif',
+        fontSize: 52,
+        lineHeight: 1.3,
+        hAlign: "center",
+        vAlign: "top",
+        bold: false,
+        italic: false,
+        underline: false,
+        strike: false,
+        textColor: "#ffffff",
+        bgColor: "#000000",
+        bgAlpha: 0.45,
+        padding: 18,
+        strokeColor: "#000000",
+        strokeWidth: 4,
+        shadowColor: "#000000",
+        shadowAlpha: 0.8,
+        shadowBlur: 14,
+        shadowSize: 1,
+        shadowX: 0,
+        shadowY: 2,
+        posX: 50,
+        posY: 86,
+        boxWidth: 90,
+        boxHeight: 28
+    };
+}
+
+function getActiveBox() {
+    return state.boxes.find(b => b.id === state.activeBoxId) || null;
+}
+
+function syncBoxSelector() {
+    controls.boxSelect.innerHTML = "";
+    state.boxes.forEach((box, idx) => {
+        controls.boxSelect.add(new Option(`文字區塊 ${idx + 1}`, box.id));
+    });
+    if (state.activeBoxId) controls.boxSelect.value = state.activeBoxId;
+}
+
+function setActiveBox(id) {
+    state.activeBoxId = id;
+    const box = getActiveBox();
+    if (!box) return;
+    syncBoxSelector();
+    syncControlsFromBox(box);
+    render();
+}
+
+function syncControlsFromBox(box) {
+    controls.textInput.value = box.text;
+    controls.fontFamily.value = box.fontFamily;
+    controls.fontSize.value = box.fontSize;
+    controls.fontSizeRange.value = box.fontSize;
+    controls.lineHeight.value = box.lineHeight;
+    controls.lineHeightRange.value = box.lineHeight;
+    controls.textColor.value = box.textColor;
+    controls.bgColor.value = box.bgColor;
+    controls.bgAlpha.value = box.bgAlpha;
+    controls.bgAlphaRange.value = box.bgAlpha;
+    controls.padding.value = box.padding;
+    controls.paddingRange.value = box.padding;
+    controls.strokeColor.value = box.strokeColor;
+    controls.strokeWidth.value = box.strokeWidth;
+    controls.strokeWidthRange.value = box.strokeWidth;
+    controls.shadowColor.value = box.shadowColor;
+    controls.shadowAlpha.value = box.shadowAlpha;
+    controls.shadowAlphaRange.value = box.shadowAlpha;
+    controls.shadowBlur.value = box.shadowBlur;
+    controls.shadowBlurRange.value = box.shadowBlur;
+    controls.shadowSize.value = box.shadowSize;
+    controls.shadowSizeRange.value = box.shadowSize;
+    controls.shadowX.value = box.shadowX;
+    controls.shadowXRange.value = box.shadowX;
+    controls.shadowY.value = box.shadowY;
+    controls.shadowYRange.value = box.shadowY;
+    controls.posX.value = box.posX;
+    controls.posXRange.value = box.posX;
+    controls.posY.value = box.posY;
+    controls.posYRange.value = box.posY;
+    controls.boxWidth.value = box.boxWidth;
+    controls.boxWidthRange.value = box.boxWidth;
+    controls.boxHeight.value = box.boxHeight;
+    controls.boxHeightRange.value = box.boxHeight;
+    controls.boldBtn.classList.toggle("active", box.bold);
+    controls.italicBtn.classList.toggle("active", box.italic);
+    controls.underlineBtn.classList.toggle("active", box.underline);
+    controls.strikeBtn.classList.toggle("active", box.strike);
+    document.querySelectorAll(".align-btn[data-align]").forEach(b => b.classList.toggle("active", b.dataset.align === box.hAlign));
+    document.querySelectorAll(".align-btn[data-valign]").forEach(b => b.classList.toggle("active", b.dataset.valign === box.vAlign));
+}
+
+function syncBoxFromControls() {
+    const box = getActiveBox();
+    if (!box) return;
+    box.text = controls.textInput.value;
+    box.fontFamily = controls.fontFamily.value;
+    box.fontSize = Number(controls.fontSize.value);
+    box.lineHeight = Number(controls.lineHeight.value);
+    box.textColor = controls.textColor.value;
+    box.bgColor = controls.bgColor.value;
+    box.bgAlpha = Number(controls.bgAlpha.value);
+    box.padding = Number(controls.padding.value);
+    box.strokeColor = controls.strokeColor.value;
+    box.strokeWidth = Number(controls.strokeWidth.value);
+    box.shadowColor = controls.shadowColor.value;
+    box.shadowAlpha = Number(controls.shadowAlpha.value);
+    box.shadowBlur = Number(controls.shadowBlur.value);
+    box.shadowSize = Number(controls.shadowSize.value);
+    box.shadowX = Number(controls.shadowX.value);
+    box.shadowY = Number(controls.shadowY.value);
+    box.posX = Number(controls.posX.value);
+    box.posY = Number(controls.posY.value);
+    box.boxWidth = Number(controls.boxWidth.value);
+    box.boxHeight = Number(controls.boxHeight.value);
+}
+
+function getCanvasPoint(e) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width;
+    const sy = canvas.height / rect.height;
+    return { x: (e.clientX - rect.left) * sx, y: (e.clientY - rect.top) * sy };
+}
+
+function applyCanvasTransform() {
+    canvas.style.transform = `translate(${state.view.offsetX}px, ${state.view.offsetY}px) scale(${state.view.scale})`;
+}
+
+function setScale(nextScale, pivotX = 0, pivotY = 0) {
+    const prev = state.view.scale;
+    const clamped = Math.max(0.2, Math.min(5, nextScale));
+    if (clamped === prev) return;
+    const ratio = clamped / prev;
+    state.view.offsetX = pivotX - (pivotX - state.view.offsetX) * ratio;
+    state.view.offsetY = pivotY - (pivotY - state.view.offsetY) * ratio;
+    state.view.scale = clamped;
+    applyCanvasTransform();
+}
+
+function getBoxMetrics(box) {
+    const w = canvas.width * (box.boxWidth / 100);
+    const h = canvas.height * (box.boxHeight / 100);
+    const cx = canvas.width * (box.posX / 100);
+    const cy = canvas.height * (box.posY / 100);
+    const x = cx - w / 2;
+    const y = cy - h / 2;
+    return { x, y, w, h, cx, cy };
+}
+
+function wrapLines(text, maxWidth) {
+    const rawLines = text.split("\n");
+    const result = [];
+    rawLines.forEach(line => {
+        if (!line) {
+            result.push("");
+            return;
+        }
+        let current = "";
+        for (const ch of line) {
+            const trial = current + ch;
+            if (ctx.measureText(trial).width <= maxWidth || current.length === 0) current = trial;
+            else { result.push(current); current = ch; }
+        }
+        if (current) result.push(current);
+    });
+    return result;
+}
+
+function drawTextDecoration(xStart, xEnd, y, color, thickness) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = thickness;
+    ctx.beginPath();
+    ctx.moveTo(xStart, y);
+    ctx.lineTo(xEnd, y);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function drawBox(box, drawHandles) {
+    const m = getBoxMetrics(box);
+    const pad = Math.max(0, box.padding);
+    const fontStyle = `${box.italic ? "italic " : ""}${box.bold ? "bold " : ""}${box.fontSize}px ${box.fontFamily}`;
+    ctx.font = fontStyle;
+    const maxTextW = Math.max(12, m.w - pad * 2);
+    const lines = wrapLines(box.text || "", maxTextW);
+    const lineH = box.fontSize * box.lineHeight;
+    const textBlockH = lines.length * lineH;
+    let firstBaseline = m.y + pad + box.fontSize;
+    if (box.vAlign === "middle") firstBaseline = m.y + (m.h - textBlockH) / 2 + box.fontSize * 0.82;
+    if (box.vAlign === "bottom") firstBaseline = m.y + m.h - pad - textBlockH + box.fontSize * 0.82;
+
+    // 1.0 時改用純色填滿，避免底圖透出
+    ctx.fillStyle = box.bgAlpha >= 0.999 ? box.bgColor : hexToRgba(box.bgColor, box.bgAlpha);
+    // 關閉陰影，避免底色也被 blur/陰影影響造成「不實色」
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillRect(m.x, m.y, m.w, m.h);
+
+    ctx.font = fontStyle;
+    ctx.fillStyle = box.textColor;
+    ctx.strokeStyle = box.strokeColor;
+    ctx.lineWidth = box.strokeWidth;
+    ctx.shadowColor = hexToRgba(box.shadowColor, box.shadowAlpha);
+    const shadowScale = Math.max(0, box.shadowSize || 0);
+    ctx.shadowBlur = box.shadowBlur * shadowScale;
+    ctx.shadowOffsetX = box.shadowX * shadowScale;
+    ctx.shadowOffsetY = box.shadowY * shadowScale;
+    ctx.textBaseline = "alphabetic";
+
+    lines.forEach((line, i) => {
+        const y = firstBaseline + i * lineH;
+        let drawX = m.x + pad;
+        if (box.hAlign === "center") drawX = m.x + m.w / 2;
+        if (box.hAlign === "right") drawX = m.x + m.w - pad;
+        ctx.textAlign = box.hAlign;
+        if (box.strokeWidth > 0) ctx.strokeText(line, drawX, y);
+        ctx.fillText(line, drawX, y);
+
+        const tw = ctx.measureText(line).width;
+        let left = drawX;
+        if (box.hAlign === "center") left = drawX - tw / 2;
+        if (box.hAlign === "right") left = drawX - tw;
+        const right = left + tw;
+        if (box.underline) drawTextDecoration(left, right, y + box.fontSize * 0.14, box.textColor, Math.max(1, box.fontSize * 0.05));
+        if (box.strike) drawTextDecoration(left, right, y - box.fontSize * 0.3, box.textColor, Math.max(1, box.fontSize * 0.05));
+    });
+
+    if (drawHandles) {
+        ctx.save();
+        ctx.shadowColor = "transparent";
+        ctx.strokeStyle = "rgba(245,222,179,0.95)";
+        ctx.setLineDash([8, 6]);
+        ctx.lineWidth = 2;
+        ctx.strokeRect(m.x, m.y, m.w, m.h);
+        ctx.setLineDash([]);
+        const hs = 14;
+        ctx.fillStyle = "#F5DEB3";
+        ctx.fillRect(m.x + m.w - hs / 2, m.y + m.h - hs / 2, hs, hs);
+        ctx.restore();
+    }
+}
+
+function render(drawHandles = true) {
+    if (!state.img) return;
+    const img = state.img;
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    state.boxes.forEach(box => drawBox(box, drawHandles && box.id === state.activeBoxId));
+}
+
+let renderQueued = false;
+function scheduleRender() {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => {
+        renderQueued = false;
+        syncBoxFromControls();
+        render();
+    });
+}
+
+function bindReRender(el) {
+    el.addEventListener("input", () => {
+        scheduleRender();
+    });
+}
+Object.values(controls).forEach(el => {
+    if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT")) bindReRender(el);
+});
+
+function linkPair(numberId, rangeId) {
+    const n = controls[numberId];
+    const r = controls[rangeId];
+    if (!n || !r) return;
+    n.addEventListener("input", () => { r.value = n.value; });
+    r.addEventListener("input", () => { n.value = r.value; });
+}
+[
+    ["fontSize", "fontSizeRange"],
+    ["lineHeight", "lineHeightRange"],
+    ["bgAlpha", "bgAlphaRange"],
+    ["padding", "paddingRange"],
+    ["strokeWidth", "strokeWidthRange"],
+    ["shadowAlpha", "shadowAlphaRange"],
+    ["shadowBlur", "shadowBlurRange"],
+    ["shadowSize", "shadowSizeRange"],
+    ["shadowX", "shadowXRange"],
+    ["shadowY", "shadowYRange"],
+    ["posX", "posXRange"],
+    ["posY", "posYRange"],
+    ["boxWidth", "boxWidthRange"],
+    ["boxHeight", "boxHeightRange"]
+].forEach(([numberId, rangeId]) => linkPair(numberId, rangeId));
+
+document.querySelectorAll(".align-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const box = getActiveBox();
+        if (!box) return;
+        if (btn.dataset.align) {
+            document.querySelectorAll(".align-btn[data-align]").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            box.hAlign = btn.dataset.align;
+        }
+        if (btn.dataset.valign) {
+            document.querySelectorAll(".align-btn[data-valign]").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            box.vAlign = btn.dataset.valign;
+        }
+        render();
+    });
+});
+
+function toggleBtn(btn, key) {
+    btn.addEventListener("click", () => {
+        const box = getActiveBox();
+        if (!box) return;
+        box[key] = !box[key];
+        btn.classList.toggle("active", box[key]);
+        render();
+    });
+}
+toggleBtn(controls.boldBtn, "bold");
+toggleBtn(controls.italicBtn, "italic");
+toggleBtn(controls.underlineBtn, "underline");
+toggleBtn(controls.strikeBtn, "strike");
+
+controls.imgInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+            state.img = img;
+            canvas.style.display = "block";
+            emptyCanvas.style.display = "none";
+            if (state.boxes.length === 0) {
+                const b = createDefaultBox();
+                state.boxes.push(b);
+                state.activeBoxId = b.id;
+                syncBoxSelector();
+                syncControlsFromBox(b);
+            }
+            render();
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+controls.boxSelect.addEventListener("change", e => setActiveBox(e.target.value));
+controls.addBoxBtn.addEventListener("click", () => {
+    const b = createDefaultBox();
+    b.posY = 50;
+    state.boxes.push(b);
+    setActiveBox(b.id);
+});
+controls.removeBoxBtn.addEventListener("click", () => {
+    if (state.boxes.length <= 1) return;
+    state.boxes = state.boxes.filter(b => b.id !== state.activeBoxId);
+    setActiveBox(state.boxes[0].id);
+});
+
+controls.resetBtn.addEventListener("click", () => {
+    const box = getActiveBox();
+    if (!box) return;
+    const fresh = createDefaultBox();
+    Object.assign(box, fresh, { id: box.id, posX: box.posX, posY: box.posY });
+    syncControlsFromBox(box);
+    render();
+});
+
+controls.downloadBtn.addEventListener("click", () => {
+    if (!state.img) return;
+    render(false);
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = `subtitle-card-${Date.now()}.png`;
+    a.click();
+    render(true);
+});
+
+canvas.addEventListener("mousedown", e => {
+    if (e.button !== 0) return;
+    if (!state.img) return;
+
+    const p = getCanvasPoint(e);
+    const active = getActiveBox();
+    if (!active) return;
+
+    let hitBox = null;
+    for (let i = state.boxes.length - 1; i >= 0; i--) {
+        const b = state.boxes[i];
+        const m = getBoxMetrics(b);
+        if (p.x >= m.x && p.x <= m.x + m.w && p.y >= m.y && p.y <= m.y + m.h) { hitBox = b; break; }
+    }
+    if (hitBox && hitBox.id !== state.activeBoxId) setActiveBox(hitBox.id);
+    const target = getActiveBox();
+    if (!target) return;
+    const m = getBoxMetrics(target);
+    const hs = 16;
+    const onResize = p.x >= m.x + m.w - hs && p.x <= m.x + m.w + hs && p.y >= m.y + m.h - hs && p.y <= m.y + m.h + hs;
+    const inside = p.x >= m.x && p.x <= m.x + m.w && p.y >= m.y && p.y <= m.y + m.h;
+    if (inside || onResize) {
+        state.interaction.mode = onResize ? "resize" : "drag";
+        state.interaction.startX = p.x;
+        state.interaction.startY = p.y;
+        state.interaction.base = { ...target };
+        return;
+    }
+
+    // 空白區按下即拖移預覽畫面
+    state.view.isPanning = true;
+    state.view.panStartX = e.clientX;
+    state.view.panStartY = e.clientY;
+    state.view.panBaseX = state.view.offsetX;
+    state.view.panBaseY = state.view.offsetY;
+});
+
+window.addEventListener("mousemove", e => {
+    if (state.view.isPanning) {
+        state.view.offsetX = state.view.panBaseX + (e.clientX - state.view.panStartX);
+        state.view.offsetY = state.view.panBaseY + (e.clientY - state.view.panStartY);
+        applyCanvasTransform();
+        return;
+    }
+    if (!state.interaction.mode || !state.img) return;
+    const box = getActiveBox();
+    if (!box) return;
+    const p = getCanvasPoint(e);
+    const dx = p.x - state.interaction.startX;
+    const dy = p.y - state.interaction.startY;
+    if (state.interaction.mode === "drag") {
+        const nx = state.interaction.base.posX + (dx / canvas.width) * 100;
+        const ny = state.interaction.base.posY + (dy / canvas.height) * 100;
+        box.posX = Math.max(0, Math.min(100, nx));
+        box.posY = Math.max(0, Math.min(100, ny));
+    } else if (state.interaction.mode === "resize") {
+        const nw = state.interaction.base.boxWidth + (dx / canvas.width) * 100;
+        const nh = state.interaction.base.boxHeight + (dy / canvas.height) * 100;
+        box.boxWidth = Math.max(10, Math.min(100, nw));
+        box.boxHeight = Math.max(6, Math.min(100, nh));
+    }
+    syncControlsFromBox(box);
+    render();
+});
+
+window.addEventListener("mouseup", () => {
+    state.interaction.mode = null;
+    state.view.isPanning = false;
+});
+
+previewWrap.addEventListener("wheel", e => {
+    if (!state.img) return;
+    e.preventDefault();
+    const rect = previewWrap.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const factor = e.deltaY < 0 ? 1.08 : 0.92;
+    setScale(state.view.scale * factor, px, py);
+}, { passive: false });
+
+controls.zoomInBtn.addEventListener("click", () => setScale(state.view.scale * 1.1, 0, 0));
+controls.zoomOutBtn.addEventListener("click", () => setScale(state.view.scale * 0.9, 0, 0));
+controls.resetViewBtn.addEventListener("click", () => {
+    state.view.scale = 1;
+    state.view.offsetX = 0;
+    state.view.offsetY = 0;
+    applyCanvasTransform();
+});
+</script>
+</body>
+</html>
