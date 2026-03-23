@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>檔名簡繁轉換 — 十三工具包</title>
+  <link rel="icon" type="image/png" href="../../images/13.png" />
+  <style>
+    :root {
+      --bg: #0D1B2A;
+      --card: #030b13;
+      --text: #fff;
+      --muted: rgba(255,255,255,0.6);
+      --accent: #F5DEB3;
+      --accent-dim: rgba(245,222,179,0.3);
+      --accent-bg: rgba(245,222,179,0.05);
+      --border: rgba(245,222,179,0.15);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,27,42,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .top-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .top-nav a:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+    }
+    header {
+      padding: 20px 16px 15px;
+      max-width: 900px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 16px 48px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .panel h3 {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+    }
+    .hint { font-size: 0.85rem; color: var(--muted); line-height: 1.5; margin: 0 0 12px; }
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 28px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+    }
+    .dropzone strong { color: var(--accent); }
+    input[type="file"] { display: none; }
+    .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 12px; }
+    label.opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn {
+      appearance: none;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn:hover:not(:disabled) {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      border-color: var(--border);
+      color: var(--muted);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      word-break: break-all;
+    }
+    th { color: var(--accent); font-weight: 600; }
+    .err { color: #f88; font-size: 0.8rem; margin-top: 8px; }
+    .status { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="../../index.html">首頁</a>
+    <a href="../../toolkit.html">十三工具包</a>
+  </nav>
+
+  <header>
+    <h1>檔名簡繁轉換</h1>
+    <span class="tag">批次處理 · 僅轉檔名 · 下載新檔</span>
+  </header>
+
+  <div class="wrap">
+    <div class="panel">
+      <h3>說明</h3>
+      <p class="hint">
+        瀏覽器無法直接改動您電腦裡的原始檔名；此工具會依新檔名<strong>重新打包下載</strong>（單檔直接下載，多檔為 ZIP）。
+        僅轉換<strong>主檔名</strong>，副檔名維持不變。若轉完重名會自動加上 <code>_2</code>、<code>_3</code>…
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>轉換方向</h3>
+      <div class="row">
+        <label class="opt"><input type="radio" name="dir" value="t2s" checked /> 繁體（台灣）→ 簡體（中國）</label>
+        <label class="opt"><input type="radio" name="dir" value="s2t" /> 簡體（中國）→ 繁體（台灣）</label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>加入檔案</h3>
+      <p class="hint">拖放多個檔案到此，或點選下方區域選檔。</p>
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="拖放或點選以選擇檔案">
+        <strong>拖放檔案至此</strong><br />
+        <span style="color:var(--muted);font-size:0.9rem;">或點此選擇（可多選）</span>
+      </div>
+      <input type="file" id="fileInput" multiple />
+      <div class="row" style="margin-top:16px;">
+        <button type="button" class="btn" id="btnConvert" disabled>轉換並下載</button>
+        <button type="button" class="btn btn-secondary" id="btnClear">清空列表</button>
+      </div>
+      <div class="err" id="errMsg" hidden></div>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="panel" id="previewPanel" hidden>
+      <h3>預覽</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr><th>原檔名</th><th>新檔名</th></tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var dropzone = document.getElementById('dropzone');
+      var fileInput = document.getElementById('fileInput');
+      var btnConvert = document.getElementById('btnConvert');
+      var btnClear = document.getElementById('btnClear');
+      var errMsg = document.getElementById('errMsg');
+      var statusEl = document.getElementById('status');
+      var previewPanel = document.getElementById('previewPanel');
+      var previewBody = document.getElementById('previewBody');
+
+      var files = [];
+
+      function splitName(name) {
+        var i = name.lastIndexOf('.');
+        if (i <= 0 || i === name.length - 1) {
+          return { base: name, ext: '' };
+        }
+        return { base: name.slice(0, i), ext: name.slice(i) };
+      }
+
+      function getConverter() {
+        var dir = document.querySelector('input[name="dir"]:checked').value;
+        if (typeof OpenCC === 'undefined' || !OpenCC.Converter) {
+          throw new Error('OpenCC 尚未載入，請重新整理頁面。');
+        }
+        if (dir === 't2s') {
+          return OpenCC.Converter({ from: 'tw', to: 'cn' });
+        }
+        return OpenCC.Converter({ from: 'cn', to: 'tw' });
+      }
+
+      function uniqueNames(entries) {
+        var used = Object.create(null);
+        var out = [];
+        entries.forEach(function (e) {
+          var stem = e.newBase;
+          var ext = e.ext;
+          var name = e.newFull;
+          var finalName = name;
+          if (used[finalName]) {
+            var k = 2;
+            finalName = stem + '_' + k + ext;
+            while (used[finalName]) {
+              k++;
+              finalName = stem + '_' + k + ext;
+            }
+          }
+          used[finalName] = true;
+          out.push({ file: e.file, newName: finalName });
+        });
+        return out;
+      }
+
+      function buildPreview() {
+        errMsg.hidden = true;
+        errMsg.textContent = '';
+        previewBody.innerHTML = '';
+        if (!files.length) {
+          previewPanel.hidden = true;
+          btnConvert.disabled = true;
+          statusEl.textContent = '';
+          return;
+        }
+        try {
+          var convert = getConverter();
+          var rows = files.map(function (f) {
+            var p = splitName(f.name);
+            var newBase = convert(p.base);
+            return {
+              file: f,
+              orig: f.name,
+              newBase: newBase,
+              ext: p.ext,
+              newFull: newBase + p.ext
+            };
+          });
+          var resolved = uniqueNames(rows);
+          resolved.forEach(function (r, idx) {
+            var tr = document.createElement('tr');
+            var td1 = document.createElement('td');
+            td1.textContent = rows[idx].orig;
+            var td2 = document.createElement('td');
+            td2.textContent = r.newName;
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            previewBody.appendChild(tr);
+          });
+          previewPanel.hidden = false;
+          btnConvert.disabled = false;
+          statusEl.textContent = '共 ' + files.length + ' 個檔案，可按「轉換並下載」。';
+        } catch (e) {
+          errMsg.hidden = false;
+          errMsg.textContent = e.message || String(e);
+          previewPanel.hidden = true;
+          btnConvert.disabled = true;
+        }
+      }
+
+      function addFileList(list) {
+        var arr = Array.prototype.slice.call(list || []);
+        arr.forEach(function (f) {
+          if (f && f.name) files.push(f);
+        });
+        buildPreview();
+      }
+
+      dropzone.addEventListener('click', function () { fileInput.click(); });
+      dropzone.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          fileInput.click();
+        }
+      });
+      fileInput.addEventListener('change', function () {
+        addFileList(fileInput.files);
+        fileInput.value = '';
+      });
+      ['dragenter', 'dragover'].forEach(function (ev) {
+        dropzone.addEventListener(ev, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(function (ev) {
+        dropzone.addEventListener(ev, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove('dragover');
+        });
+      });
+      dropzone.addEventListener('drop', function (e) {
+        var dt = e.dataTransfer;
+        if (!dt || !dt.files) return;
+        addFileList(dt.files);
+      });
+
+      document.querySelectorAll('input[name="dir"]').forEach(function (r) {
+        r.addEventListener('change', buildPreview);
+      });
+
+      btnClear.addEventListener('click', function () {
+        files = [];
+        buildPreview();
+      });
+
+      function downloadBlob(blob, filename) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(a.href);
+        a.remove();
+      }
+
+      btnConvert.addEventListener('click', async function () {
+        if (!files.length) return;
+        errMsg.hidden = true;
+        btnConvert.disabled = true;
+        statusEl.textContent = '處理中…';
+        try {
+          var convert = getConverter();
+          var rows = files.map(function (f) {
+            var p = splitName(f.name);
+            var newBase = convert(p.base);
+            return {
+              file: f,
+              newBase: newBase,
+              ext: p.ext,
+              newFull: newBase + p.ext
+            };
+          });
+          var resolved = uniqueNames(rows);
+
+          if (resolved.length === 1) {
+            var buf = await resolved[0].file.arrayBuffer();
+            downloadBlob(new Blob([buf]), resolved[0].newName);
+            statusEl.textContent = '已下載：' + resolved[0].newName;
+          } else {
+            var zip = new JSZip();
+            for (var i = 0; i < resolved.length; i++) {
+              var item = resolved[i];
+              zip.file(item.newName, await item.file.arrayBuffer());
+            }
+            var zblob = await zip.generateAsync({ type: 'blob' });
+            downloadBlob(zblob, 'renamed-files.zip');
+            statusEl.textContent = '已下載 ZIP（' + resolved.length + ' 個檔案）';
+          }
+        } catch (e) {
+          errMsg.hidden = false;
+          errMsg.textContent = e.message || String(e);
+          statusEl.textContent = '';
+        }
+        btnConvert.disabled = false;
+      });
+    })();
+  </script>
+</body>
+</html>

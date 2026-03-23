@@ -1,6 +1,6 @@
-/* 全局設定 */
+/* 全局設定（繁中優先字體堆疊，各專區導覽／側欄一致） */
 html, body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Heiti TC", sans-serif;
     margin: 0;
     padding: 0;
     background-color: #0D1B2A;
@@ -79,6 +79,10 @@ html, body {
     height: 32px;
     padding-bottom: 0;
     padding-right: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
 }
 
 .nav-links a.active {
@@ -357,6 +361,15 @@ html, body {
     min-height: 100vh;
     margin-top: 120px;
     border: 2px solid #F5DEB3; /* 新增小麥色邊框 */
+    font-family: inherit;
+}
+
+/* 側欄「○○目錄」標題：與頂部導覽同一套字體，避免各頁內嵌樣式造成視差 */
+.sidebar h2 {
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
 }
 
 .sidebar a, .chapter-list a {
@@ -662,7 +675,7 @@ width: 100%;    /* 讓標題占滿整行 */
 }
 
 .cyberpunk-text {
-    font-family: 'Arial', sans-serif;
+    font-family: inherit;
     text-transform: uppercase;
     position: relative; /* 確保相對定位 */
     display: inline-block; /* 讓容器符合內容大小 */
