@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR碼產生與解析工具 — 十三工具包</title>
+    <title>QR碼產生與解析工具 — 宅宅仔十三</title>
     <link rel="icon" href="../../images/13.png" type="image/png">
     <style>
         :root {
@@ -122,6 +122,10 @@
 
         .footer { text-align: center; color: var(--muted); font-size: .78rem; padding: 20px 0; margin-top: 10px; border-top: 1px solid var(--border); }
         .footer a { color: var(--accent); text-decoration: none; } .footer a:hover { text-decoration: underline; }
+        .footer-site-map { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.35rem 0.45rem; margin-bottom: 12px; font-size: 0.78rem; letter-spacing: 0.06em; line-height: 1.5; }
+        .footer-site-map a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed rgba(245,222,179,0.35); }
+        .footer-site-map a:hover { text-decoration: underline; border-bottom-color: var(--accent); }
+        .footer-map-sep { color: var(--muted); opacity: 0.75; user-select: none; }
     </style>
 </head>
 <body>
@@ -222,8 +226,16 @@
     </div>
 
     <div class="footer">
-        <a href="../../toolkit.html">返回十三工具包</a> · <a href="../../index.html">軒轅十三的個人空間</a>
-        <p style="margin-top:8px;">版權所有 © 2025 軒轅十三</p>
+        <nav class="footer-site-map" aria-label="網站目錄">
+            <a href="../../index.html">首頁</a><span class="footer-map-sep">·</span>
+            <a href="../../writing.html">寫作專區</a><span class="footer-map-sep">·</span>
+            <a href="../../art.html">繪圖專區</a><span class="footer-map-sep">·</span>
+            <a href="../../videos.html">影音專區</a><span class="footer-map-sep">·</span>
+            <a href="../../toolkit.html">十三工具包</a><span class="footer-map-sep">·</span>
+            <a href="../../recommend-tools.html">大推工具</a>
+        </nav>
+        <a href="../../toolkit.html">返回十三工具包</a> · <a href="../../index.html">宅宅仔十三</a>
+        <p style="margin-top:8px;">版權所有 © 2025 宅宅仔十三</p>
     </div>
 </div>
 
