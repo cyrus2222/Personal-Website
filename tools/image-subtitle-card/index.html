@@ -87,7 +87,7 @@
             border-radius: 8px; padding: 8px 0; cursor: pointer; font-size: .8rem;
         }
         .align-btn.active { background: var(--accent); color: #0D1B2A; border-color: var(--accent); font-weight: 700; }
-        .actions { display: grid; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(245,222,179,0.12); }
+        .actions { display: grid; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(245,222,179,0.12); }
         .btn {
             border: 1px solid var(--border); background: var(--card2); color: var(--text);
             border-radius: 8px; padding: 10px 12px; cursor: pointer; font-size: .86rem; transition: all .2s;
@@ -155,12 +155,17 @@
 
     <div class="layout">
         <div class="panel">
-            <div class="panel-title">文字設定</div>
+            
             <div class="controls">
+                <div class="actions">
+                    <button class="btn" id="resetBtn">重設樣式</button>
+                    <button class="btn primary" id="downloadBtn">下載圖片</button>
+                </div>
                 <div class="field">
                     <label for="imgInput">上傳圖片</label>
                     <input id="imgInput" type="file" accept="image/*">
                 </div>
+                <div class="panel-title">文字設定</div>
                 <div class="field">
                     <label for="textInput">字幕 / 字卡內容</label>
                     <textarea id="textInput" placeholder="輸入要顯示在圖片上的文字（可換行）">這是一段示範字幕</textarea>
@@ -341,11 +346,6 @@
                         <input id="boxHeight" type="number" min="6" max="90" value="28">
                         <input id="boxHeightRange" type="range" min="6" max="90" value="28">
                     </div>
-                </div>
-
-                <div class="actions">
-                    <button class="btn" id="resetBtn">重設樣式</button>
-                    <button class="btn primary" id="downloadBtn">下載圖片</button>
                 </div>
             </div>
         </div>
