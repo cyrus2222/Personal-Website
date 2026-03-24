@@ -153,14 +153,24 @@
     th { color: var(--accent); font-weight: 600; }
     .err { color: #f88; font-size: 0.8rem; margin-top: 8px; }
     .status { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 20px 0;
+      margin-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
   <nav class="top-nav">
-    <a href="../../index.html">首頁</a>
-    <a href="../../toolkit.html">十三工具包</a>
+    <a href="../../toolkit.html">← 返回十三工具包</a>
+    <a href="../../index.html">← 返回主站</a>
   </nav>
 
   <header>
@@ -211,6 +221,11 @@
           <tbody id="previewBody"></tbody>
         </table>
       </div>
+    </div>
+
+    <div class="footer">
+      <a href="../../toolkit.html">返回十三工具包</a> · <a href="../../index.html">軒轅十三的個人空間</a>
+      <p style="margin-top:8px;">版權所有 © 2025 軒轅十三</p>
     </div>
   </div>
 
