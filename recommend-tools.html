@@ -29,30 +29,30 @@
             margin-bottom: 2rem;
         }
         .recommend-header h2 {
-            font-size: 2.3rem;
+            font-size: 1.95rem;
             color: #F5DEB3;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             margin: 0;
             text-shadow: 0 0 20px rgba(245, 222, 179, 0.25);
         }
         .recommend-header p {
-            margin-top: 0.8rem;
+            margin-top: 0.65rem;
             color: rgba(255, 255, 255, 0.65);
-            letter-spacing: 0.08em;
-            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            font-size: 0.86rem;
         }
         .recommend-grid {
             width: 100%;
-            max-width: 900px;
+            max-width: 960px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.85rem;
         }
         .recommend-card {
             position: relative;
             border: 1px solid rgba(245, 222, 179, 0.2);
-            border-radius: 14px;
-            padding: 1.3rem 1.1rem;
+            border-radius: 10px;
+            padding: 0.95rem 0.85rem;
             background: linear-gradient(135deg, rgba(3, 11, 19, 0.92), rgba(22, 27, 34, 0.96));
             backdrop-filter: blur(4px);
             transition: all 0.3s ease;
@@ -70,29 +70,29 @@
             transition: transform 0.3s ease;
         }
         .recommend-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             border-color: rgba(245, 222, 179, 0.45);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(245, 222, 179, 0.08);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32), 0 0 16px rgba(245, 222, 179, 0.07);
         }
         .recommend-card:hover::before {
             transform: scaleX(1);
         }
         .recommend-card h3 {
-            margin: 0 0 0.8rem;
+            margin: 0 0 0.5rem;
             color: #F5DEB3;
-            font-size: 1.7rem;
-            letter-spacing: 0.08em;
+            font-size: 1.2rem;
+            letter-spacing: 0.06em;
         }
         .recommend-card ul {
             margin: 0;
             padding-left: 0;
             list-style: none;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 1.16rem;
-            line-height: 1.65;
+            font-size: 0.92rem;
+            line-height: 1.5;
             font-weight: 500;
         }
-        .recommend-card li { margin: 0.24rem 0; }
+        .recommend-card li { margin: 0.16rem 0; }
         .recommend-card a {
             color: rgba(255, 255, 255, 0.92);
             text-decoration: none;
@@ -128,9 +128,9 @@
             box-shadow: 0 0 18px rgba(245, 222, 179, 0.15);
         }
         @media (max-width: 600px) {
-            .recommend-header h2 { font-size: 1.8rem; }
-            .recommend-card h3 { font-size: 1.4rem; }
-            .recommend-card ul { font-size: 1.02rem; }
+            .recommend-header h2 { font-size: 1.45rem; }
+            .recommend-card h3 { font-size: 1.08rem; }
+            .recommend-card ul { font-size: 0.88rem; }
         }
     </style>
 </head>
@@ -244,6 +244,20 @@
                 <h3>AI 整理書籍內容</h3>
                 <ul>
                     <li><a href="https://libriai.org/" target="_blank" rel="noopener">Libri</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>秘書型 AI</h3>
+                <ul>
+                    <li><a href="https://grok.com/" target="_blank" rel="noopener">Grok</a>、<a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a></li>
+                </ul>
+            </article>
+
+            <article class="recommend-card">
+                <h3>綜合型 AI</h3>
+                <ul>
+                    <li><a href="https://www.genspark.ai/zh-tw" target="_blank" rel="noopener">Genspark</a></li>
                 </ul>
             </article>
         </div>
