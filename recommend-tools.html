@@ -41,65 +41,68 @@
             letter-spacing: 0.06em;
             font-size: 0.86rem;
         }
-        .recommend-grid {
+        .recommend-catalog {
             width: 100%;
-            max-width: 960px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 0.85rem;
+            max-width: 720px;
         }
-        .recommend-card {
-            position: relative;
-            border: 1px solid rgba(245, 222, 179, 0.2);
-            border-radius: 10px;
-            padding: 0.95rem 0.85rem;
-            background: linear-gradient(135deg, rgba(3, 11, 19, 0.92), rgba(22, 27, 34, 0.96));
-            backdrop-filter: blur(4px);
-            transition: all 0.3s ease;
-            overflow: hidden;
+        .recommend-section {
+            margin-bottom: 2.1rem;
         }
-        .recommend-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(to right, transparent, #F5DEB3, transparent);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+        .recommend-section:last-of-type {
+            margin-bottom: 0;
         }
-        .recommend-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(245, 222, 179, 0.45);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32), 0 0 16px rgba(245, 222, 179, 0.07);
-        }
-        .recommend-card:hover::before {
-            transform: scaleX(1);
-        }
-        .recommend-card h3 {
-            margin: 0 0 0.5rem;
+        .recommend-section-title {
+            font-size: 1.05rem;
             color: #F5DEB3;
-            font-size: 1.2rem;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.12em;
+            margin: 0 0 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(245, 222, 179, 0.35);
+            font-weight: 600;
         }
-        .recommend-card ul {
-            margin: 0;
-            padding-left: 0;
+        .recommend-tool-list {
             list-style: none;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.92rem;
-            line-height: 1.5;
-            font-weight: 500;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
-        .recommend-card li { margin: 0.16rem 0; }
-        .recommend-card a {
+        .recommend-tool-list > li {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.35rem 0.85rem;
+            padding: 0.62rem 0.88rem;
+            border-radius: 10px;
+            border: 1px solid rgba(245, 222, 179, 0.18);
+            background: linear-gradient(135deg, rgba(3, 11, 19, 0.88), rgba(22, 27, 34, 0.94));
+            font-size: 0.92rem;
+            line-height: 1.55;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .recommend-tool-list > li:hover {
+            border-color: rgba(245, 222, 179, 0.38);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+        }
+        .recommend-tool-list .tool-name {
+            flex: 0 0 auto;
+            min-width: 9em;
+            color: rgba(245, 222, 179, 0.98);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .recommend-tool-list .tool-links {
+            flex: 1 1 12rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .recommend-tool-list a {
             color: rgba(255, 255, 255, 0.92);
             text-decoration: none;
             border-bottom: 1px dashed rgba(245, 222, 179, 0.45);
             transition: all 0.2s ease;
         }
-        .recommend-card a:hover {
+        .recommend-tool-list a:hover {
             color: #F5DEB3;
             border-bottom-color: #F5DEB3;
         }
@@ -129,8 +132,11 @@
         }
         @media (max-width: 600px) {
             .recommend-header h2 { font-size: 1.45rem; }
-            .recommend-card h3 { font-size: 1.08rem; }
-            .recommend-card ul { font-size: 0.88rem; }
+            .recommend-tool-list > li { font-size: 0.88rem; }
+            .recommend-tool-list .tool-name {
+                min-width: 100%;
+                margin-bottom: 0.15rem;
+            }
         }
     </style>
 </head>
@@ -155,111 +161,109 @@
         <div class="recommend-bg"><canvas id="bgCanvas"></canvas></div>
         <div class="recommend-header">
             <h2>大推工具目錄</h2>
-            <p>精選 AI 工具整理</p>
+            <p>依用途分類，每列一項工具</p>
         </div>
 
-        <div class="recommend-grid">
-            <article class="recommend-card">
-                <h3>圖片生成</h3>
-                <ul>
-                    <li><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>、<a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a></li>
-                    <li><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener">即夢國際</a>、<a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a></li>
+        <div class="recommend-catalog">
+            <section class="recommend-section" aria-labelledby="cat-generate">
+                <h2 class="recommend-section-title" id="cat-generate">生成與影像</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name">圖片生成</span>
+                        <span class="tool-links"><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>、<a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>、<a href="https://jimeng.jianying.com/" target="_blank" rel="noopener">即夢國際</a>、<a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">影片生成</span>
+                        <span class="tool-links"><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener">即夢國際</a>、<a href="https://openai.com/sora" target="_blank" rel="noopener">Sora2</a>、<a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">換臉</span>
+                        <span class="tool-links"><a href="https://viggle.ai/app/home" target="_blank" rel="noopener">Viggle</a></span>
+                    </li>
                 </ul>
-            </article>
+            </section>
 
-            <article class="recommend-card">
-                <h3>影片生成</h3>
-                <ul>
-                    <li><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener">即夢國際</a>、<a href="https://openai.com/sora" target="_blank" rel="noopener">Sora2</a></li>
-                    <li><a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a></li>
+            <section class="recommend-section" aria-labelledby="cat-text">
+                <h2 class="recommend-section-title" id="cat-text">文字與翻譯</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name">翻譯</span>
+                        <span class="tool-links"><a href="https://translate.google.com.tw/?hl=zh-TW" target="_blank" rel="noopener">Google 翻譯</a>、<a href="https://www.deepl.com/translator" target="_blank" rel="noopener">DeepL</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">圖片轉文字</span>
+                        <span class="tool-links"><a href="https://translate.google.com.tw/?hl=zh-TW" target="_blank" rel="noopener">Google 翻譯</a>、<a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a></span>
+                    </li>
                 </ul>
-            </article>
+            </section>
 
-            <article class="recommend-card">
-                <h3>翻譯</h3>
-                <ul>
-                    <li><a href="https://translate.google.com.tw/?hl=zh-TW" target="_blank" rel="noopener">Google 翻譯</a></li>
-                    <li><a href="https://www.deepl.com/translator" target="_blank" rel="noopener">DeepL</a></li>
+            <section class="recommend-section" aria-labelledby="cat-files">
+                <h2 class="recommend-section-title" id="cat-files">檔案與格式</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name">免費萬能壓縮</span>
+                        <span class="tool-links"><a href="https://freecompress.com/zh-tw" target="_blank" rel="noopener">FreeCompress</a> — 圖片、影片、音訊、PDF 等</span>
+                    </li>
+                    <li>
+                        <span class="tool-name">檔案轉換</span>
+                        <span class="tool-links"><a href="https://www.alltoall.net/" target="_blank" rel="noopener">凹凸凹 ALL TO ALL</a> — PDF、Office、影音、圖片等雲端轉檔</span>
+                    </li>
                 </ul>
-            </article>
+            </section>
 
-            <article class="recommend-card">
-                <h3>圖片轉文字</h3>
-                <ul>
-                    <li><a href="https://translate.google.com.tw/?hl=zh-TW" target="_blank" rel="noopener">Google 翻譯</a></li>
-                    <li><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a></li>
+            <section class="recommend-section" aria-labelledby="cat-audio">
+                <h2 class="recommend-section-title" id="cat-audio">音訊</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name">分離人聲</span>
+                        <span class="tool-links"><a href="https://vocalremover.org/zh/" target="_blank" rel="noopener">vocalremover.org</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">聲音轉文字、字幕</span>
+                        <span class="tool-links"><a href="https://www.csubtitle.com/text/" target="_blank" rel="noopener">cSubtitle</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">文字轉 AI 配音</span>
+                        <span class="tool-links"><a href="https://ondoku3.com/zh-hant/" target="_blank" rel="noopener">Ondoku</a>、<a href="https://noiz.ai/tts/creation" target="_blank" rel="noopener">Noiz AI</a></span>
+                    </li>
                 </ul>
-            </article>
+            </section>
 
-            <article class="recommend-card">
-                <h3>分離人聲</h3>
-                <ul>
-                    <li><a href="https://vocalremover.org/zh/" target="_blank" rel="noopener">vocalremover.org</a></li>
+            <section class="recommend-section" aria-labelledby="cat-ai">
+                <h2 class="recommend-section-title" id="cat-ai">AI 對話與工作台</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name">AI 筆記</span>
+                        <span class="tool-links"><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">秘書型 AI</span>
+                        <span class="tool-links"><a href="https://grok.com/" target="_blank" rel="noopener">Grok</a>、<a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">綜合型 AI</span>
+                        <span class="tool-links"><a href="https://www.genspark.ai/zh-tw" target="_blank" rel="noopener">Genspark</a></span>
+                    </li>
                 </ul>
-            </article>
+            </section>
 
-            <article class="recommend-card">
-                <h3>聲音轉文字、字幕</h3>
-                <ul>
-                    <li><a href="https://www.csubtitle.com/text/" target="_blank" rel="noopener">cSubtitle</a></li>
+            <section class="recommend-section" aria-labelledby="cat-life">
+                <h2 class="recommend-section-title" id="cat-life">生活與職涯</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name">AI 保險對比</span>
+                        <span class="tool-links"><a href="https://blueapex.io/" target="_blank" rel="noopener">BlueApex</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">AI 面試練習</span>
+                        <span class="tool-links"><a href="https://slayjobs.com/" target="_blank" rel="noopener">SlayJobs</a></span>
+                    </li>
+                    <li>
+                        <span class="tool-name">AI 整理書籍內容</span>
+                        <span class="tool-links"><a href="https://libriai.org/" target="_blank" rel="noopener">Libri</a></span>
+                    </li>
                 </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>換臉</h3>
-                <ul>
-                    <li><a href="https://viggle.ai/app/home" target="_blank" rel="noopener">Viggle</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>文字轉 AI 配音</h3>
-                <ul>
-                    <li><a href="https://ondoku3.com/zh-hant/" target="_blank" rel="noopener">Ondoku</a>、<a href="https://noiz.ai/tts/creation" target="_blank" rel="noopener">Noiz AI</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>AI 筆記</h3>
-                <ul>
-                    <li><a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>AI 保險對比</h3>
-                <ul>
-                    <li><a href="https://blueapex.io/" target="_blank" rel="noopener">BlueApex</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>AI 面試練習</h3>
-                <ul>
-                    <li><a href="https://slayjobs.com/" target="_blank" rel="noopener">SlayJobs</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>AI 整理書籍內容</h3>
-                <ul>
-                    <li><a href="https://libriai.org/" target="_blank" rel="noopener">Libri</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>秘書型 AI</h3>
-                <ul>
-                    <li><a href="https://grok.com/" target="_blank" rel="noopener">Grok</a>、<a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a></li>
-                </ul>
-            </article>
-
-            <article class="recommend-card">
-                <h3>綜合型 AI</h3>
-                <ul>
-                    <li><a href="https://www.genspark.ai/zh-tw" target="_blank" rel="noopener">Genspark</a></li>
-                </ul>
-            </article>
+            </section>
         </div>
 
         <a class="back-link" href="index.html">← 返回首頁</a>
