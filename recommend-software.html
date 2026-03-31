@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宅宅仔十三－大推軟體</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/13.png" type="image/png">
+    <style>
+        body { margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
+        .recommend-hero {
+            position: relative;
+            min-height: 100vh;
+            padding: 2rem 1rem 4rem;
+            margin-top: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .recommend-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+        #bgCanvas { width: 100%; height: 100%; display: block; }
+        .recommend-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .recommend-header h2 {
+            font-size: 1.95rem;
+            color: #F5DEB3;
+            letter-spacing: 0.1em;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(245, 222, 179, 0.25);
+        }
+        .recommend-header p {
+            margin-top: 0.65rem;
+            color: rgba(255, 255, 255, 0.65);
+            letter-spacing: 0.06em;
+            font-size: 0.86rem;
+        }
+        .recommend-catalog {
+            width: 100%;
+            max-width: 720px;
+        }
+        .recommend-section {
+            margin-bottom: 2.1rem;
+        }
+        .recommend-section:last-of-type {
+            margin-bottom: 0;
+        }
+        .recommend-section-title {
+            font-size: 1.05rem;
+            color: #F5DEB3;
+            letter-spacing: 0.12em;
+            margin: 0 0 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(245, 222, 179, 0.35);
+            font-weight: 600;
+        }
+        .recommend-tool-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .recommend-tool-list > li {
+            display: grid;
+            grid-template-columns: 18rem minmax(0, 1fr);
+            column-gap: 0.85rem;
+            row-gap: 0.2rem;
+            align-items: start;
+            padding: 0.62rem 0.88rem;
+            border-radius: 10px;
+            border: 1px solid rgba(245, 222, 179, 0.18);
+            background: linear-gradient(135deg, rgba(3, 11, 19, 0.88), rgba(22, 27, 34, 0.94));
+            font-size: 0.92rem;
+            line-height: 1.55;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .recommend-tool-list > li:hover {
+            border-color: rgba(245, 222, 179, 0.38);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+        }
+        .recommend-tool-list .tool-name {
+            min-width: 0;
+            color: rgba(245, 222, 179, 0.98);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem 0.5rem;
+        }
+        .recommend-tool-list .tool-name > a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(245, 222, 179, 0.45);
+            transition: all 0.2s ease;
+        }
+        .recommend-tool-list .tool-name > a:hover {
+            color: #F5DEB3;
+            border-bottom-color: #F5DEB3;
+        }
+        .tool-badge-free {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 0.18em 0.45em;
+            border-radius: 4px;
+            background: rgba(46, 160, 67, 0.28);
+            color: #a8ebc0;
+            line-height: 1.2;
+        }
+        .tool-badge-paid {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 0.18em 0.45em;
+            border-radius: 4px;
+            background: rgba(200, 150, 60, 0.3);
+            color: #e8c882;
+            line-height: 1.2;
+        }
+        .tool-badge-hosted {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 0.18em 0.45em;
+            border-radius: 4px;
+            background: rgba(120, 140, 200, 0.28);
+            color: #bcc8f0;
+            line-height: 1.2;
+        }
+        .recommend-tool-list .tool-links {
+            min-width: 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .back-link {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            border: 1px solid rgba(245, 222, 179, 0.25);
+            border-radius: 999px;
+            padding: 0.55rem 1.2rem;
+            letter-spacing: 0.08em;
+            transition: all 0.25s;
+            background: rgba(3, 11, 19, 0.6);
+        }
+        .back-link:hover {
+            color: #F5DEB3;
+            border-color: #F5DEB3;
+            background: rgba(245, 222, 179, 0.08);
+            box-shadow: 0 0 18px rgba(245, 222, 179, 0.15);
+        }
+        .recommend-tools-cross {
+            margin-top: 1rem;
+            font-size: 0.86rem;
+            color: rgba(255, 255, 255, 0.58);
+        }
+        .recommend-tools-cross a {
+            color: rgba(245, 222, 179, 0.85);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(245, 222, 179, 0.4);
+        }
+        .recommend-tools-cross a:hover {
+            color: #F5DEB3;
+            border-bottom-color: #F5DEB3;
+        }
+        @media (max-width: 600px) {
+            .recommend-header h2 { font-size: 1.45rem; }
+            .recommend-tool-list > li {
+                font-size: 0.88rem;
+                grid-template-columns: 1fr;
+            }
+            .recommend-tool-list .tool-links {
+                padding-top: 0.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.html"><img src="images/13.png" alt="網站Logo"></a>
+            <h1 class="logo cyberpunk-text">宅宅仔十三</h1>
+        </div>
+        <button class="menu-toggle">☰</button>
+        <ul class="nav-links">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="writing.html">寫作專區</a></li>
+            <li><a href="art.html">繪圖專區</a></li>
+            <li><a href="videos.html">影音專區</a></li>
+            <li><a href="toolkit.html">十三工具包</a></li>
+            <li><a href="recommend-sites.html">大推網站</a></li>
+            <li><a href="recommend-software.html" class="active">大推軟體</a></li>
+        </ul>
+    </nav>
+
+    <section class="recommend-hero">
+        <div class="recommend-bg"><canvas id="bgCanvas"></canvas></div>
+        <div class="recommend-header">
+            <h2>大推軟體</h2>
+        </div>
+
+        <div class="recommend-catalog">
+            <section class="recommend-section" aria-labelledby="sw-browse">
+                <h2 class="recommend-section-title" id="sw-browse">瀏覽與日常</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name"><a href="https://www.mozilla.org/firefox/" target="_blank" rel="noopener">Mozilla Firefox</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">瀏覽器</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://www.7-zip.org/" target="_blank" rel="noopener">7-Zip</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">解壓縮</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="recommend-section" aria-labelledby="sw-security">
+                <h2 class="recommend-section-title" id="sw-security">安全</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name"><a href="https://products.s.kaspersky-labs.com/homeuser/kfa2021/21.3.10.391/multilanguage-INT-0.229.0/3435333238347c44454c7c31_25944/kfa21.3.10.391en_zh-Hant_25944.exe" target="_blank" rel="noopener">卡巴斯基免費版</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">防毒軟體</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="recommend-section" aria-labelledby="sw-media">
+                <h2 class="recommend-section-title" id="sw-media">影音</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name"><a href="https://www.videolan.org/vlc/" target="_blank" rel="noopener">VLC</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">播放器</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://obsproject.com/" target="_blank" rel="noopener">OBS Studio</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">錄影／直播</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://www.capcut.com/" target="_blank" rel="noopener">CapCut</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">影片／短影音剪輯，有付費進階功能</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://drive.google.com/file/d/1E_IduuYjQ5sz0bkeQzAbbkRnhPbkQUrD/view?usp=sharing" target="_blank">即時鍵位顯示器（適用於 OBS）</a><span class="tool-badge-hosted">站內</span></span>
+                        <span class="tool-links">7-Zip 壓縮包，直播／OBS 用</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://www.audacityteam.org/" target="_blank" rel="noopener">Audacity</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">音訊剪輯</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://apps.microsoft.com/detail/9nblggh516xp?hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">EarTrumpet</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">隨時切換音訊設備、調整混音（Windows）</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://apps.microsoft.com/detail/9n0866fs04w8?hl=zh-TW&gl=TW" target="_blank" rel="noopener">Dolby Access</a><span class="tool-badge-paid">付費，有試用</span></span>
+                        <span class="tool-links">能夠讓便宜耳機提高聲音層次</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="recommend-section" aria-labelledby="sw-art">
+                <h2 class="recommend-section-title" id="sw-art">繪圖與設計</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name"><a href="https://krita.org/" target="_blank" rel="noopener">Krita</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">數位繪圖</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://www.gimp.org/" target="_blank" rel="noopener">GIMP</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">影像編修</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://drive.google.com/file/d/1KD7hfiEXRQrnThJvfnb-Qrr2z2aU15lE/view?usp=sharing" target="_blank">Adobe CS6 破解版</a><span class="tool-badge-hosted">站內</span></span>
+                        <span class="tool-links">ZIP 壓縮包</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://drive.google.com/file/d/1M9JRp_h8ae9xxb_JPBK4HVBoed0pcS-u/view?usp=sharing" target="_blank">信達證照大師 4.0（WIN，Photoshop）</a><span class="tool-badge-hosted">站內</span></span>
+                        <span class="tool-links">ZIP 壓縮包</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://inkscape.org/" target="_blank" rel="noopener">Inkscape</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">向量圖</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://www.blender.org/" target="_blank" rel="noopener">Blender</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">3D 建模／動畫</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="recommend-section" aria-labelledby="sw-office">
+                <h2 class="recommend-section-title" id="sw-office">文件與開發</h2>
+                <ul class="recommend-tool-list">
+                    <li>
+                        <span class="tool-name"><a href="https://www.libreoffice.org/" target="_blank" rel="noopener">LibreOffice</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">文書試算簡報</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://code.visualstudio.com/" target="_blank" rel="noopener">Visual Studio Code</a><span class="tool-badge-free">免費</span></span>
+                        <span class="tool-links">程式編輯器</span>
+                    </li>
+                    <li>
+                        <span class="tool-name"><a href="https://drive.google.com/file/d/1_7S8ulFQb_Z2HTOulJqP2qyfyFX24-Ob/view?usp=sharing" target="_blank">檢測電腦序號</a><span class="tool-badge-hosted">站內</span></span>
+                        <span class="tool-links">Windows 可執行檔</span>
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <a class="back-link" href="index.html">← 返回首頁</a>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-blocks">
+            <div class="footer-block" style="background: #3498db; width: 100px; height: 100px; left: 10%; top: 20%;"></div>
+            <div class="footer-block" style="background: #2ecc71; width: 80px; height: 80px; right: 15%; top: 10%;"></div>
+            <div class="footer-block" style="background: #e74c3c; width: 120px; height: 60px; left: 30%; bottom: 20%;"></div>
+            <div class="footer-block" style="background: #f1c40f; width: 70px; height: 70px; right: 25%; bottom: 30%;"></div>
+        </div>
+        <div class="footer-content">
+            <nav class="footer-site-map" aria-label="網站目錄">
+                <a href="index.html">首頁</a><span class="footer-map-sep">·</span>
+                <a href="writing.html">寫作專區</a><span class="footer-map-sep">·</span>
+                <a href="art.html">繪圖專區</a><span class="footer-map-sep">·</span>
+                <a href="videos.html">影音專區</a><span class="footer-map-sep">·</span>
+                <a href="toolkit.html">十三工具包</a><span class="footer-map-sep">·</span>
+                <a href="recommend-sites.html">大推網站</a><span class="footer-map-sep">·</span>
+                <a href="recommend-software.html">大推軟體</a>
+            </nav>
+            <p>版權所有：&copy; 2025 宅宅仔十三</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        const canvas = document.getElementById("bgCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            const heroSection = document.querySelector(".recommend-hero");
+            if (heroSection) {
+                canvas.width = window.innerWidth;
+                canvas.height = heroSection.offsetHeight;
+            }
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        const shapes = [];
+        for (let i = 0; i < 45; i++) {
+            let r = Math.floor(Math.random() * 80) + 30;
+            let g = Math.floor(Math.random() * 80) + 30;
+            let b = Math.floor(Math.random() * 80) + 30;
+            shapes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 36 + 10,
+                dx: Math.random() * 1.4 - 0.7,
+                dy: Math.random() * 1.4 - 0.7,
+                color: `rgba(${r}, ${g}, ${b}, 0.45)`
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(13, 27, 42, 0.95)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            shapes.forEach(shape => {
+                ctx.fillStyle = shape.color;
+                ctx.beginPath();
+                ctx.arc(shape.x, shape.y, shape.size, 0, Math.PI * 2);
+                ctx.fill();
+                shape.x += shape.dx;
+                shape.y += shape.dy;
+                if (shape.x <= 0 || shape.x >= canvas.width) shape.dx *= -1;
+                if (shape.y <= 0 || shape.y >= canvas.height) shape.dy *= -1;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
