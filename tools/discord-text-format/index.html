@@ -233,6 +233,16 @@
             background: rgba(0,0,0,0.25);
         }
 
+        .preview-hint {
+            flex-shrink: 0;
+            padding: 4px 12px 8px;
+            font-size: 0.68rem;
+            line-height: 1.45;
+            color: rgba(255,255,255,0.45);
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.2);
+        }
+
         #discordPreview {
             flex: 1;
             overflow-y: auto;
@@ -303,6 +313,14 @@
             margin: 6px 0 4px;
             color: #f2f3f5;
             line-height: 1.5;
+        }
+
+        #discordPreview .preview-subtext {
+            font-size: 0.75em;
+            font-weight: 400;
+            margin: 2px 0 4px;
+            color: #949ba4;
+            line-height: 1.35;
         }
 
         #discordPreview .preview-li {
@@ -463,6 +481,25 @@
             margin-top: 10px;
             justify-content: flex-end;
             flex-wrap: wrap;
+        }
+
+        .top-actions-wrap {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6px 10px 10px;
+            box-sizing: border-box;
+        }
+
+        .button-group--top-actions {
+            margin-top: 0;
+            margin-bottom: 0;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button-group--top-actions .action-button.clear {
+            margin-right: 0;
         }
 
         .action-button {
@@ -730,6 +767,16 @@
         </a>
     </div>
 
+    <div class="top-actions-wrap">
+        <div class="button-group button-group--top-actions">
+            <button class="action-button clear" onclick="clearText(event)">清空文字</button>
+            <button class="action-button" onclick="selectAllText(event)">全選文字</button>
+            <button class="action-button" onclick="undoLastAction(event)">返回上一步</button>
+            <button class="action-button" onclick="redoLastAction(event)">返回下一步</button>
+            <button class="action-button" onclick="copyText(event)">複製文字</button>
+        </div>
+    </div>
+
     <div class="stats-bar">
         <span>空白字元：<span id="whiteSpaceCount">0</span></span>
         <span>非空白字元：<span id="nonWhiteSpaceCount">0</span></span>
@@ -763,16 +810,8 @@
             </div>
 
             <div class="preview-panel" aria-live="polite">
-                <div class="preview-label">即時預覽（近似 Discord 顯示）</div>
+                <div class="preview-label">模擬discord顯示</div>
                 <div id="discordPreview"></div>
-            </div>
-
-            <div class="button-group">
-                <button class="action-button clear" onclick="clearText(event)">清空文字</button>
-                <button class="action-button" onclick="selectAllText(event)">全選文字</button>
-                <button class="action-button" onclick="undoLastAction(event)">返回上一步</button>
-                <button class="action-button" onclick="redoLastAction(event)">返回下一步</button>
-                <button class="action-button" onclick="copyText(event)">複製文字</button>
             </div>
 
             <div class="video-container">
@@ -793,9 +832,9 @@
         <div class="button-section" id="rightButtonSection">
             <h2>段落格式</h2>
             <div class="button-group-container">
-                <button onclick="addCodeBlock()">更凸顯、電腦可直接複製的代碼塊（各段）</button>
-                <button onclick="addCodeBlockWhole()">更凸顯、電腦可直接複製的代碼塊（選取範圍）</button>
-                <div class="button-section-divider">以下按鈕產生的符號要在句首才奏效</div>
+                <button onclick="addCodeBlock()">更凸顯的代碼塊（各段）</button>
+                <button onclick="addCodeBlockWhole()">更凸顯的代碼塊（選取範圍）</button>
+                <div class="button-section-divider">以下按鈕產生的符號要在句首才奏效；符號與內文之間須為半形空白</div>
                 <button onclick="addQuote()">縮行引用文字</button>
                 <button onclick="addParentList()">母項目清單符號</button>
                 <button onclick="addNestedList()">母子項目清單符號</button>
@@ -803,6 +842,7 @@
                 <button onclick="addHeading1()">大小變化-變更大</button>
                 <button onclick="addHeading2()">大小變化-變大</button>
                 <button onclick="addHeading3()">變粗、增加行距</button>
+                <button onclick="addSubtext()">大小變化-變小</button>
             </div>
         </div>
     </div>
@@ -1006,6 +1046,7 @@
         function addHeading1() { processLinePrefix('# '); }
         function addHeading2() { processLinePrefix('## '); }
         function addHeading3() { processLinePrefix('### '); }
+        function addSubtext() { processLinePrefix('-# '); }
 
         function showToast(message, type) {
             const toast = document.getElementById('toast');
@@ -1074,8 +1115,8 @@
         }
 
         const PREVIEW_UL_MARK = '[-*\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D]';
-        const RE_PREVIEW_TOP_UL = new RegExp('^' + PREVIEW_UL_MARK + '\\s+(.+)$');
-        const RE_PREVIEW_NESTED_UL = new RegExp('^\\s{2}' + PREVIEW_UL_MARK + '\\s+(.+)$');
+        const RE_PREVIEW_TOP_UL = new RegExp('^' + PREVIEW_UL_MARK + ' +(.+)$');
+        const RE_PREVIEW_NESTED_UL = new RegExp('^  ' + PREVIEW_UL_MARK + ' +(.+)$');
 
         function inlineFmtNoLinks(s) {
             let t = escapeHtml(s);
@@ -1163,6 +1204,8 @@
         function trySpecialPreviewLine(raw) {
             const oneLineCode = raw.match(/^```(.*)```$/);
             if (oneLineCode) return '<div class="preview-line-code">' + escapeHtml(oneLineCode[1]) + '</div>';
+            const mSub = raw.match(/^-# +(.*)$/);
+            if (mSub) return '<div class="preview-subtext">' + inlineFmt(mSub[1]) + '</div>';
             if (/^### (.+)$/.test(raw)) return '<div class="preview-h3">' + inlineFmt(RegExp.$1) + '</div>';
             if (/^## (.+)$/.test(raw)) return '<div class="preview-h2">' + inlineFmt(RegExp.$1) + '</div>';
             if (/^# (.+)$/.test(raw)) return '<div class="preview-h1">' + inlineFmt(RegExp.$1) + '</div>';
@@ -1190,7 +1233,7 @@
                     continue;
                 }
 
-                const mExplicitOl = raw.match(/^(\d+)\.\s+(.+)$/);
+                const mExplicitOl = raw.match(/^(\d+)\. +(.+)$/);
                 if (mExplicitOl) {
                     const n = parseInt(mExplicitOl[1], 10);
                     html += previewOrderedRowHtml(n, mExplicitOl[2]);
@@ -1230,7 +1273,7 @@
                     if (r === '') break;
                     const sp = trySpecialPreviewLine(r);
                     if (sp !== null) break;
-                    const rOl = r.match(/^(\d+)\.\s+(.+)$/);
+                    const rOl = r.match(/^(\d+)\. +(.+)$/);
                     if (rOl) break;
                     if (RE_PREVIEW_TOP_UL.test(r)) break;
                     para.push(r);
