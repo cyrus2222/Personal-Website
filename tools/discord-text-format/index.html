@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -209,6 +209,180 @@
         #textArea::-webkit-scrollbar-thumb { background: rgba(245,222,179,0.2); border-radius: 4px; }
         #textArea::-webkit-scrollbar-thumb:hover { background: rgba(245,222,179,0.35); }
         #textArea::selection { background-color: rgba(245,222,179,0.3); color: white; }
+
+        .preview-panel {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 120px;
+            max-height: 280px;
+        }
+
+        .preview-label {
+            flex-shrink: 0;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.25);
+        }
+
+        #discordPreview {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px;
+            font-family: 'gg sans', 'Noto Sans TC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.375;
+            color: #dbdee1;
+            background: #313338;
+            min-height: 100px;
+        }
+
+        #discordPreview:empty::before {
+            content: '輸入或套用格式後，預覽會顯示在這裡';
+            color: #949ba4;
+            font-size: 14px;
+        }
+
+        #discordPreview .preview-pre {
+            margin: 4px 0;
+            padding: 10px 12px;
+            background: #2b2d31;
+            border: 1px solid #1e1f22;
+            border-radius: 4px;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #b5bac1;
+        }
+
+        #discordPreview .preview-line-code {
+            margin: 2px 0;
+            padding: 6px 10px;
+            background: #2b2d31;
+            border-radius: 4px;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #b5bac1;
+        }
+
+        #discordPreview .preview-blockquote {
+            margin: 4px 0;
+            padding: 0 0 0 10px;
+            border-left: 4px solid #4e5058;
+            color: #b5bac1;
+        }
+
+        #discordPreview .preview-h1 {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin: 6px 0 2px;
+            color: #f2f3f5;
+        }
+
+        #discordPreview .preview-h2 {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin: 6px 0 2px;
+            color: #f2f3f5;
+        }
+
+        #discordPreview .preview-h3 {
+            font-size: 1em;
+            font-weight: 700;
+            margin: 6px 0 4px;
+            color: #f2f3f5;
+            line-height: 1.5;
+        }
+
+        #discordPreview .preview-li {
+            margin: 2px 0;
+            padding-left: 0.15em;
+            display: flex;
+            gap: 6px;
+            align-items: flex-start;
+        }
+
+        #discordPreview .preview-li .bullet {
+            flex-shrink: 0;
+            color: #949ba4;
+            user-select: none;
+        }
+
+        #discordPreview .preview-li.nested {
+            margin-left: 1.35em;
+        }
+
+        #discordPreview .preview-li-ordered .bullet {
+            min-width: 1.25em;
+            text-align: right;
+            color: #949ba4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #discordPreview .preview-p {
+            margin: 2px 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        #discordPreview code {
+            padding: 0 2px;
+            background: #2b2d31;
+            border-radius: 3px;
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e6edf3;
+        }
+
+        #discordPreview .preview-spoiler {
+            background: #202225;
+            color: #202225;
+            border-radius: 3px;
+            padding: 0 4px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        #discordPreview .preview-spoiler:hover {
+            background: #4f545c;
+            color: #f2f3f5;
+        }
+
+        #discordPreview a.preview-link {
+            color: #5865f2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        #discordPreview a.preview-link:hover {
+            text-decoration: underline;
+        }
+
+        #discordPreview a.preview-link:visited {
+            color: #5865f2;
+        }
+
+        #discordPreview a.preview-link strong,
+        #discordPreview a.preview-link em,
+        #discordPreview a.preview-link code,
+        #discordPreview a.preview-link del {
+            color: inherit;
+        }
+
+        #discordPreview::-webkit-scrollbar { width: 8px; }
+        #discordPreview::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        #discordPreview::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
         .button-section::-webkit-scrollbar { width: 8px; }
         .button-section::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
@@ -505,6 +679,8 @@
             .center-content { margin: 50px 0 0 0; width: 100%; }
             .editor-wrap { height: 200px; }
 
+            .preview-panel { max-height: 220px; }
+
             .stats-bar { flex-wrap: wrap; justify-content: center; }
             .reminder { width: 100%; text-align: center; margin-top: 5px; }
         }
@@ -584,6 +760,11 @@
                 <div class="editor-content">
                     <textarea id="textArea" placeholder="在這裡輸入文字..."></textarea>
                 </div>
+            </div>
+
+            <div class="preview-panel" aria-live="polite">
+                <div class="preview-label">即時預覽（近似 Discord 顯示）</div>
+                <div id="discordPreview"></div>
             </div>
 
             <div class="button-group">
@@ -866,11 +1047,248 @@
         leftButtonSection.addEventListener('click', (e) => e.stopPropagation());
         rightButtonSection.addEventListener('click', (e) => e.stopPropagation());
 
+        function escapeHtml(s) {
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(s) {
+            return escapeHtml(s).replace(/'/g, '&#39;');
+        }
+
+        function safeHref(u) {
+            const t = String(u).trim().toLowerCase();
+            if (t.startsWith('javascript:') || t.startsWith('data:') || t.startsWith('vbscript:')) return '#';
+            return String(u);
+        }
+
+        function normalizePreviewMarkdown(s) {
+            return String(s)
+                .replace(/\uFF3B/g, '[')
+                .replace(/\uFF3D/g, ']')
+                .replace(/\uFF08/g, '(')
+                .replace(/\uFF09/g, ')');
+        }
+
+        const PREVIEW_UL_MARK = '[-*\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D]';
+        const RE_PREVIEW_TOP_UL = new RegExp('^' + PREVIEW_UL_MARK + '\\s+(.+)$');
+        const RE_PREVIEW_NESTED_UL = new RegExp('^\\s{2}' + PREVIEW_UL_MARK + '\\s+(.+)$');
+
+        function inlineFmtNoLinks(s) {
+            let t = escapeHtml(s);
+            t = t.replace(/\|\|([\s\S]*?)\|\|/g, '<span class="preview-spoiler">$1</span>');
+            t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+            t = t.replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>');
+            t = t.replace(/~~([\s\S]*?)~~/g, '<del>$1</del>');
+            t = t.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+            return t;
+        }
+
+        function inlineFmtWithLinks(s) {
+            s = normalizePreviewMarkdown(s);
+            const parts = [];
+            let i = 0;
+            while (i < s.length) {
+                const lb = s.indexOf('[', i);
+                if (lb === -1) {
+                    if (i < s.length) parts.push({ type: 'text', v: s.slice(i) });
+                    break;
+                }
+                if (lb > i) parts.push({ type: 'text', v: s.slice(i, lb) });
+                let depth = 1;
+                let j = lb + 1;
+                while (j < s.length && depth > 0) {
+                    const c = s[j];
+                    if (c === '[') depth++;
+                    else if (c === ']') depth--;
+                    j++;
+                }
+                if (depth !== 0) {
+                    parts.push({ type: 'text', v: s.slice(lb) });
+                    break;
+                }
+                const closeBracket = j - 1;
+                let parenStart = closeBracket + 1;
+                while (parenStart < s.length && /\s/.test(s[parenStart])) parenStart++;
+                if (parenStart >= s.length || s[parenStart] !== '(') {
+                    parts.push({ type: 'text', v: s.slice(lb, closeBracket + 1) });
+                    i = closeBracket + 1;
+                    continue;
+                }
+                let depthP = 1;
+                let k = parenStart + 1;
+                while (k < s.length && depthP > 0) {
+                    const c = s[k];
+                    if (c === '(') depthP++;
+                    else if (c === ')') depthP--;
+                    k++;
+                }
+                if (depthP !== 0) {
+                    parts.push({ type: 'text', v: s.slice(lb) });
+                    break;
+                }
+                const closeParen = k - 1;
+                parts.push({
+                    type: 'link',
+                    label: s.slice(lb + 1, closeBracket),
+                    href: s.slice(parenStart + 1, closeParen)
+                });
+                i = k;
+            }
+            return parts.map(p => {
+                if (p.type === 'link') {
+                    const inner = inlineFmtNoLinks(p.label);
+                    const h = escapeAttr(safeHref(p.href.trim()));
+                    return `<a class="preview-link" href="${h}" target="_blank" rel="noopener noreferrer">${inner}</a>`;
+                }
+                return inlineFmtNoLinks(p.v);
+            }).join('');
+        }
+
+        function inlineFmt(s) {
+            return inlineFmtWithLinks(s);
+        }
+
+        function previewOrderedRowHtml(num, body) {
+            return '<div class="preview-li preview-li-ordered"><span class="bullet">' + escapeHtml(String(num)) + '.</span><span>' + inlineFmt(body) + '</span></div>';
+        }
+
+        function previewUnorderedRowHtml(body) {
+            return '<div class="preview-li preview-li-unordered"><span class="bullet">•</span><span>' + inlineFmt(body) + '</span></div>';
+        }
+
+        function trySpecialPreviewLine(raw) {
+            const oneLineCode = raw.match(/^```(.*)```$/);
+            if (oneLineCode) return '<div class="preview-line-code">' + escapeHtml(oneLineCode[1]) + '</div>';
+            if (/^### (.+)$/.test(raw)) return '<div class="preview-h3">' + inlineFmt(RegExp.$1) + '</div>';
+            if (/^## (.+)$/.test(raw)) return '<div class="preview-h2">' + inlineFmt(RegExp.$1) + '</div>';
+            if (/^# (.+)$/.test(raw)) return '<div class="preview-h1">' + inlineFmt(RegExp.$1) + '</div>';
+            if (/^> (.+)$/.test(raw)) return '<div class="preview-blockquote">' + inlineFmt(RegExp.$1) + '</div>';
+            const mNested = raw.match(RE_PREVIEW_NESTED_UL);
+            if (mNested) {
+                return '<div class="preview-li nested preview-li-unordered"><span class="bullet">◦</span><span>' + inlineFmt(mNested[1]) + '</span></div>';
+            }
+            return null;
+        }
+
+        function renderPreviewTextBlock(content) {
+            const lines = content.split('\n');
+            let html = '';
+            let li = 0;
+            let prevNorm = null;
+            let olContinuation = null;
+            while (li < lines.length) {
+                const raw = lines[li].replace(/\r/g, '');
+                if (raw === '') {
+                    html += '<div class="preview-p"><br></div>';
+                    prevNorm = null;
+                    olContinuation = null;
+                    li++;
+                    continue;
+                }
+
+                const mExplicitOl = raw.match(/^(\d+)\.\s+(.+)$/);
+                if (mExplicitOl) {
+                    const n = parseInt(mExplicitOl[1], 10);
+                    html += previewOrderedRowHtml(n, mExplicitOl[2]);
+                    olContinuation = n;
+                    prevNorm = raw;
+                    li++;
+                    continue;
+                }
+
+                const mTopUl = raw.match(RE_PREVIEW_TOP_UL);
+                if (mTopUl) {
+                    if (olContinuation !== null) {
+                        olContinuation += 1;
+                        html += previewOrderedRowHtml(olContinuation, mTopUl[1]);
+                    } else {
+                        html += previewUnorderedRowHtml(mTopUl[1]);
+                    }
+                    prevNorm = raw;
+                    li++;
+                    continue;
+                }
+
+                const special = trySpecialPreviewLine(raw);
+                if (special !== null) {
+                    html += special;
+                    prevNorm = raw;
+                    olContinuation = null;
+                    li++;
+                    continue;
+                }
+
+                olContinuation = null;
+                const para = [];
+                let prevInGroup = prevNorm;
+                while (li < lines.length) {
+                    const r = lines[li].replace(/\r/g, '');
+                    if (r === '') break;
+                    const sp = trySpecialPreviewLine(r);
+                    if (sp !== null) break;
+                    const rOl = r.match(/^(\d+)\.\s+(.+)$/);
+                    if (rOl) break;
+                    if (RE_PREVIEW_TOP_UL.test(r)) break;
+                    para.push(r);
+                    prevInGroup = r;
+                    li++;
+                }
+                if (para.length > 0) {
+                    const joined = para.join('\n');
+                    html += '<div class="preview-p">' + inlineFmt(joined).replace(/\n/g, '<br>') + '</div>';
+                    prevNorm = para[para.length - 1];
+                }
+            }
+            return html;
+        }
+
+        function renderDiscordPreview(text) {
+            if (!text) return '';
+            const parts = [];
+            let i = 0;
+            while (i < text.length) {
+                const open = text.indexOf('```', i);
+                if (open === -1) {
+                    parts.push({ type: 'text', content: text.slice(i) });
+                    break;
+                }
+                if (open > i) parts.push({ type: 'text', content: text.slice(i, open) });
+                const after = open + 3;
+                const close = text.indexOf('```', after);
+                if (close === -1) {
+                    parts.push({ type: 'code', content: text.slice(after) });
+                    break;
+                }
+                parts.push({ type: 'code', content: text.slice(after, close) });
+                i = close + 3;
+            }
+            let html = '';
+            for (const p of parts) {
+                if (p.type === 'code') {
+                    html += '<pre class="preview-pre"><code>' + escapeHtml(p.content) + '</code></pre>';
+                } else {
+                    html += renderPreviewTextBlock(p.content);
+                }
+            }
+            return html;
+        }
+
+        function updatePreview() {
+            const el = document.getElementById('discordPreview');
+            if (!el) return;
+            el.innerHTML = renderDiscordPreview(textArea.value);
+        }
+
         function updateCharacterCount() {
             const text = textArea.value;
             document.getElementById('whiteSpaceCount').textContent = (text.match(/\s/g) || []).length;
             document.getElementById('nonWhiteSpaceCount').textContent = text.replace(/\s/g, '').length;
             document.getElementById('totalCount').textContent = text.length;
+            updatePreview();
         }
 
         textArea.addEventListener('input', updateCharacterCount);
